@@ -25,24 +25,16 @@
 
 import express from 'express'
 import path from 'path'
-import url from 'url'
 import router from './routes/products.route.js'
 import { errorHandler, notFound } from '../middleware/error.middleware.mjs'
 
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 const app = express()
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 app.use(express.json())
 
 app.use('/api/products', router)
-// app.use(express.static(path.join(__dirname, '../view')));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../view', 'index.html'))
-})
+app.use(express.static(path.join(__dirname, './view')));
 
 app.use(notFound) // NotFound
 app.use(errorHandler) // ErrorHandler
