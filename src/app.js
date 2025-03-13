@@ -24,31 +24,27 @@
 // Meddelanden: Ni ska skapa en separat endpoint där användaren kan skicka ett meddelande med en POST. Där ska ni validera att fälten `name`, `email` & `message` har skickats med. Returnera en status 200 om fälten är korrekt skickade, annars en status 400. Meddelanden behöver inte sparas i databasen.
 
 import express from 'express'
-import mongoose, { Schema } from 'mongoose';
+import path from 'path'
+import url from 'url'
+import router from './routes/products.route.js'
+import { errorHandler, notFound } from '../middleware/error.middleware.mjs'
 
-const app = express();
-const PORT = process.env.PORT || 9999
-const MONGO_URI = process.env.MONGO_URI
+const __filename = url.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-let contacts = []
+const app = express()
+// const __dirname = path.resolve();
 
 app.use(express.json())
 
-const connectDB = async () => {
-    try {
-        const mongo = await mongoose.connect(MONGO_URI)
-        console.log('Connected to DB')
-    } catch (error) {
-        console.log(error)
-    }
-}
+app.use('/api/products', router)
+// app.use(express.static(path.join(__dirname, '../view')));
 
-app.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`)
-    connectDB()
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../view', 'index.html'))
 })
 
-app.get('/api/sales', async (req, res) => {
-    const sales = await eCommerceDB.sales.find()
-    res(200).json(sales)
-})
+app.use(notFound) // NotFound
+app.use(errorHandler) // ErrorHandler
+
+export default app

@@ -1,10 +1,11 @@
 {
   "name": "inlamningsuppgift-back-end-utveckling",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=.env index.js"
+    "start": "node src/server.js",
+    "dev": "nodemon --env-file=.env src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
   },
   "dependencies": {
     "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
     "mongoose": "^8.12.1"
   }
 }

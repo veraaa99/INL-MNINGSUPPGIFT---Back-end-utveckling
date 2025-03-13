@@ -15,22 +15,18 @@ const productSchema = mongoose.Schema({
     },
     category: {
         type: String, 
-        required: true
-    },
-    description: {
-        type: String, 
-        default: "A new product added to the collection."
-    },
-    category: {
-        type: String, 
-        required: true
+        default: "None"
     },
     images: {
         type: [String], 
-        required: true
+        default: [
+            "https://unsplash.com/photos/yC-Yzbqy7PY",
+            "https://unsplash.com/photos/LNRyGwIJr5c",
+            "https://unsplash.com/photos/N7XodRrbzS0"
+        ]
     }
 }, { timestamps: true })
 
-const Product = mongoose.model('Product', productSchema)
+const Products = mongoose.model('Products', productSchema)
 
-export default Product
+export default Products
