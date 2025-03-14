@@ -4,11 +4,11 @@ const url2 = 'http://localhost:8080/api/messages'
 let productForm = document.querySelector('#productForm');
 let messageForm = document.querySelector('#messageForm')
 let productList = document.querySelector('#productList');
+let editForm = document.querySelector('#editForm')
 
 const products = []
 
 // READ
-
 const getProducts = async () => {
     const response = await fetch (url)
     const data = await response.json()
@@ -28,21 +28,71 @@ getProducts();
 const showProducts = () => {
     products.forEach((product) => {
         let li = document.createElement("li")
-        li.innerText = product.name
+        li.innerHTML = product.name + '<br /> Price: ' + product.price + '<br /> Category: ' + product.category + '<br /> Description: ' + product.description
         li.id = product._id
 
         let img = document.createElement("img")
         img.src = product.images[0]
         img.id = product._id
 
+        let deleteBtn = document.createElement("button")
+        deleteBtn.innerHTML = "Delete product"
+        deleteBtn.id = product._id
+
+        let updateBtn = document.createElement("button")
+        updateBtn.innerHTML = "Update product"
+        updateBtn.id = product._id
+
         li.appendChild(img)
+        li.appendChild(deleteBtn)
+        li.appendChild(updateBtn)
         productList.appendChild(li)
+
+        // DELETE PRODUCT
+        deleteBtn.addEventListener('click', async() => {
+            const res = await fetch('/api/products/' + product._id, {
+                method: 'DELETE'
+            })
+
+            // const data = await res.json()
+
+            if(!res.ok) {
+                // Skriv ut felmeddelande
+                return
+            }
+
+            // products = products.filter(product => product._id != null)
+            delete products[product._id]
+            console.log("product deleted")
+            showProducts()
+        })
+
+        // EDIT PRODUCT
+        updateBtn.addEventListener('click', async() => {
+
+            editForm.style.display = editForm.style.display === "block" ? "none" : "block";
+
+            // const res = await fetch('/api/products/' + product._id, {
+            //     method: 'PUT'
+            // })
+
+            // // const data = await res.json()
+
+            // if(!res.ok) {
+            //     // Skriv ut felmeddelande
+            //     return
+            // }
+
+            // // products = products.filter(product => product._id != null)
+            // delete products[product._id]
+            // console.log("product deleted")
+            // showProducts()
+        })
 
     })
 }
 
 // CREATE PRODUCT
-
 productForm.addEventListener('submit', e => {
     e.preventDefault()
 
@@ -90,7 +140,6 @@ const submitProduct = async ( obj ) => {
 }
 
 // CREATE MESSAGE
-
 messageForm.addEventListener('submit', e => {
     e.preventDefault()
 
