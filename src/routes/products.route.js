@@ -1,11 +1,12 @@
 import express from 'express'
-import { createProduct, deleteProduct, getProduct, getProducts, updateProduct } from '../controllers/products.controller.js'
+import { createProduct, deleteProduct, getProduct, getProducts, updateProduct, sendMessage } from '../controllers/products.controller.js'
 
 const router = express.Router()
 
 /// CRUD 
 
 router.post('/', createProduct) // CREATE
+router.post('/messages', sendMessage) // CREATE
 
 router.get('/', getProducts) // READ
 router.get('/:id', getProduct) // READ

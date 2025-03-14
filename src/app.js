@@ -14,14 +14,28 @@
 
 // Krav för godkänt:
 
-// NoSQL: Ditt API ska kopplas mot en NoSQL databas tex. MongoDB.
+// NoSQL: Ditt API ska kopplas mot en NoSQL databas tex. MongoDB. 
+// OK
+
 // JSON svar: Alla svar från databasen ska skickas till användaren i form av JSON.
+// OK
+
 // Lista produkter: Man ska kunna hämta alla produkter som en lista från databasen genom att göra en GET
+// OK
+
 // Enskild produkt: Man ska kunna hämta en enskild produkt från databasen med en GET och att man skickar med id på produkten som en parameter.
+// OK
+
 // Lägga till produkt: Man ska kunna lägga till en produkt på databasen med en POST
+// OK
+
 // Uppdatera produkt: Man ska kunna uppdatera en produkt på databasen med PUT eller PATCH
+
 // Ta bort produkt: Man ska kunna ta bort en produkt från databasen med DELETE
-// Meddelanden: Ni ska skapa en separat endpoint där användaren kan skicka ett meddelande med en POST. Där ska ni validera att fälten `name`, `email` & `message` har skickats med. Returnera en status 200 om fälten är korrekt skickade, annars en status 400. Meddelanden behöver inte sparas i databasen.
+
+// Meddelanden: Ni ska skapa en separat endpoint där användaren kan skicka ett meddelande med en POST. Där ska ni validera att fälten `name`, `email` & `message` har skickats med. 
+// Returnera en status 200 om fälten är korrekt skickade, annars en status 400. Meddelanden behöver inte sparas i databasen.
+// OK
 
 import express from 'express'
 import path from 'path'
@@ -34,6 +48,8 @@ const __dirname = path.resolve();
 app.use(express.json())
 
 app.use('/api/products', router)
+app.use('/api', router)
+
 app.use(express.static(path.join(__dirname, './view')));
 
 app.use(notFound) // NotFound

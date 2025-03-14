@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import Products from "../models/products.model.js"
 import asyncHandler from 'express-async-handler'
 
+// PRODUCT COMMANDS
 export const createProduct = asyncHandler(async (req, res, next) => {
     const { name, price, description, category, images } = req.body
 
@@ -15,6 +16,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     const product = await Products.create({ name, price, description, category, images })
    
     res.status(201).json(product)
+    console.log(res.status(201).json(product))
 })
 
 export const getProducts = asyncHandler(async (req, res) => {
@@ -92,4 +94,22 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     }
 
     res.sendStatus(204)
+})
+
+// MESSAGE COMMANDS
+
+export const sendMessage = asyncHandler(async (req, res, next) => {
+    const { name, email, message } = req.body
+
+    if(!name) {
+        return res.status(400).json({ message: "Please enter a name" })
+    }
+    if(!email) {
+        return res.status(400).json({ message: "Please enter a valid email adress" })
+    }
+    if(!message) {
+        return res.status(400).json({ message: "Please enter a message" })
+    }
+   
+    res.status(200).json({ message: "Message succesfully submitted!" })
 })
