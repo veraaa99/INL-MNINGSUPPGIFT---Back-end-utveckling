@@ -30,25 +30,64 @@
 // OK
 
 // Uppdatera produkt: Man ska kunna uppdatera en produkt på databasen med PUT eller PATCH
+// OK
 
 // Ta bort produkt: Man ska kunna ta bort en produkt från databasen med DELETE
+// OK
 
 // Meddelanden: Ni ska skapa en separat endpoint där användaren kan skicka ett meddelande med en POST. Där ska ni validera att fälten `name`, `email` & `message` har skickats med. 
 // Returnera en status 200 om fälten är korrekt skickade, annars en status 400. Meddelanden behöver inte sparas i databasen.
 // OK
 
+// VÄL GODKÄNT:
+
+// Registrera användare: 
+// Användaren ska kunna registrera sig med POST och få tillbaka en status 201 
+// och en jsonwebtoken innehållande relevant information.
+// OK
+
+// Kryptera lösenord: 
+// När en användare skapas så ska email och lösenord sparas i databasen. 
+// Detta lösenord ska krypteras och får INTE sparas i klartext.
+
+// Logga in användare: 
+// Användaren ska kunna logga in med POST och få tillbaka en status 200 
+// och en jsonwebtoken innehållande relevant information.
+
+// Order hantering: 
+// Om användaren är inloggad, ska användaren kunna spara en order i databasen. 
+// Varje order ska innehålla en array -> `products` där varje objekt innehåller `productId` och `quantity`. 
+
+// Order-User relation: 
+// När ordern sparas, använd en Bearer token för att spara användarens id på ordern.
+
+// Order historik: 
+// Användaren ska kunna hämta alla sina tidigare lagda ordrar 
+// genom att göra en GET och skicka med en Bearer token.
+
+// Order-Product relation: 
+// När användaren hämtar sina tidigare lagda ordrar (via en GET-förfrågan till orderhistorik-endpointen), 
+// ska varje order innehålla en array -> `products`, där varje objekt innehåller all information om varje produkt i ordern. 
+// För att uppnå detta, skapa en relation mellan `productId` i ordern och den faktiska produkten i databasen. 
+// Använd en teknik som kallas "populering" (populating) för att inkludera den detaljerade produktinformationen i varje order. 
+// Säkerställ att denna information skickas korrekt som en del av API-svaret för att ge användaren fullständig information 
+// om varje produkt i deras tidigare lagda ordrar.
+
 import express from 'express'
 import path from 'path'
-import router from './routes/products.route.js'
-import { errorHandler, notFound } from '../middleware/error.middleware.mjs'
+import productRoutes from './routes/product.route.js'
+import messageRoutes from './routes/message.route.js'
+import userRoutes from './routes/user.route.js'
+import { errorHandler, notFound } from './middleware/error.middleware.mjs'
 
 const app = express()
 const __dirname = path.resolve();
 
 app.use(express.json())
 
-app.use('/api/products', router)
-app.use('/api', router)
+app.use('/api/products', productRoutes)
+app.use('/api/messages', messageRoutes)
+app.use('/api/users', userRoutes)
 
 app.use(express.static(path.join(__dirname, './view')));
 

@@ -1,8 +1,7 @@
 import mongoose from "mongoose"
-import Products from "../models/products.model.js"
+import Product from "../models/product.model.js"
 import asyncHandler from 'express-async-handler'
 
-// PRODUCT COMMANDS
 export const createProduct = asyncHandler(async (req, res, next) => {
     const { name, price, description, category, images } = req.body
 
@@ -13,14 +12,13 @@ export const createProduct = asyncHandler(async (req, res, next) => {
         return res.status(400).json({ message: "Please enter a price for your product" })
     }
 
-    const product = await Products.create({ name, price, description, category, images })
+    const product = await Product.create({ name, price, description, category, images })
    
     res.status(201).json(product)
-    console.log(res.status(201).json(product))
 })
 
 export const getProducts = asyncHandler(async (req, res) => {
-    const products = await Products.find().exec()
+    const products = await Product.find().exec()
 
     res.status(200).json(products)
 })
@@ -32,7 +30,7 @@ export const getProduct = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Invalid id"})
     }
 
-    const product = await Products.findById(id).exec()
+    const product = await Product.findById(id).exec()
 
     if(!product) {
         return res.status(404).json({ message: 'Can\'t find the product that you are looking for'})
@@ -68,7 +66,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     }
 
     if(Object.keys(toUpdate).length === 0){
-        res.status(400).json({ message: "No changes provided" })
+        res.status(400).json({ message: "No changes made to the product" })
     }
 
     const updatedProduct = await Products.findByIdAndUpdate(id, toUpdate, { new: true }).exec()
@@ -77,7 +75,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json(updatedProduct)
-
 })
 
 export const deleteProduct = asyncHandler(async (req, res) => {
@@ -87,29 +84,11 @@ export const deleteProduct = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Invalid id"})
     }
 
-    const product = await Products.findByIdAndDelete(id).exec()
+    const product = await Product.findByIdAndDelete(id).exec()
 
     if(!product) {
         return res.status(404).json({ message: 'Product could not be found' })
     }
 
     res.sendStatus(204)
-})
-
-// MESSAGE COMMANDS
-
-export const sendMessage = asyncHandler(async (req, res, next) => {
-    const { name, email, message } = req.body
-
-    if(!name) {
-        return res.status(400).json({ message: "Please enter a name" })
-    }
-    if(!email) {
-        return res.status(400).json({ message: "Please enter a valid email adress" })
-    }
-    if(!message) {
-        return res.status(400).json({ message: "Please enter a message" })
-    }
-   
-    res.status(200).json({ message: "Message succesfully submitted!" })
 })
