@@ -49,10 +49,12 @@
 // Kryptera lösenord: 
 // När en användare skapas så ska email och lösenord sparas i databasen. 
 // Detta lösenord ska krypteras och får INTE sparas i klartext.
+// OK
 
 // Logga in användare: 
 // Användaren ska kunna logga in med POST och få tillbaka en status 200 
 // och en jsonwebtoken innehållande relevant information.
+// OK
 
 // Order hantering: 
 // Om användaren är inloggad, ska användaren kunna spara en order i databasen. 
@@ -83,7 +85,7 @@ import { errorHandler, notFound } from './middleware/error.middleware.mjs'
 const app = express()
 const __dirname = path.resolve();
 
-app.use(express.json())
+app.use(express.json({ extended: false }));
 
 app.use('/api/products', productRoutes)
 app.use('/api/messages', messageRoutes)
