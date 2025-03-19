@@ -59,6 +59,7 @@
 // Order hantering: 
 // Om användaren är inloggad, ska användaren kunna spara en order i databasen. 
 // Varje order ska innehålla en array -> `products` där varje objekt innehåller `productId` och `quantity`. 
+// 
 
 // Order-User relation: 
 // När ordern sparas, använd en Bearer token för att spara användarens id på ordern.
@@ -77,9 +78,12 @@
 
 import express from 'express'
 import path from 'path'
+
 import productRoutes from './routes/product.route.js'
 import messageRoutes from './routes/message.route.js'
 import userRoutes from './routes/user.route.js'
+import orderRoutes from './routes/order.route.js'
+
 import { errorHandler, notFound } from './middleware/error.middleware.mjs'
 
 const app = express()
@@ -90,6 +94,7 @@ app.use(express.json({ extended: false }));
 app.use('/api/products', productRoutes)
 app.use('/api/messages', messageRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/orders', orderRoutes)
 
 app.use(express.static(path.join(__dirname, './view')));
 

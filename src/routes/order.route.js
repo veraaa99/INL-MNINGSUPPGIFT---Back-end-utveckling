@@ -1,10 +1,10 @@
 import express from 'express'
 import { verifyToken } from '../middleware/verify.middleware.js'
-import { getOrder, getOrders, placeOrder } from '../controllers/order.controller.js'
+import { createOrder, getOrder, getOrders } from '../controllers/order.controller.js'
 
 const router = express.Router()
 
-router.post('/', placeOrder)
+router.post('/', verifyToken, createOrder)
 
 router.get('/', verifyToken, getOrders)
 router.get('/:id', verifyToken, getOrder)
