@@ -18,25 +18,31 @@ export const createOrder = asyncHandler(async (req, res) => {
         productIds.push(product.productId)
     })
 
-    let sum    
+    let sum = 0
 
     try {
         const orderedProducts = await Product.find().where('_id').in(productIds).exec()
 
-        const orderQuantity = products.reduce((previousValue, currentValue) => {
-            return previousValue + currentValue.quantity;
-        }, 0);
+        let orderQuantity = []
+        let sums = []
 
-        sum = await orderedProducts.reduce((previousValue, currentValue) => {
-            return previousValue + currentValue.price * orderQuantity;
-        }, 0);
+        products.forEach(product => {
+            orderQuantity.push(product.quantity)
+        })
+
+        orderedProducts.forEach(product => {
+            sums.push(product.price)
+        })
+
+        for(let i=0; i< orderQuantity.length; i++) {
+            sum += orderQuantity[i] * sums[i];
+        }
 
     } catch (error) {
         return res.status(404).json({ message: 'An error occurred: One or several products could not be found'})
     }
 
     const order = await Order.create({ user, products, totalPrice: sum })
-    console.log(order)
 
     res.status(201).json(order)
 })
