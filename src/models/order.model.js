@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
  })
 
 const orderProductsSchema = new mongoose.Schema({
+    _id: Object,
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true }, 
     quantity: { type: Number, required: true }
 }, { timestamps: true })

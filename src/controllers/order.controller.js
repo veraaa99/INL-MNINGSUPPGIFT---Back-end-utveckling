@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import Product from "../models/product.model.js"
 import asyncHandler from 'express-async-handler'
 import Order from "../models/order.model.js"
+import User from "../models/user.model.js"
 
 export const createOrder = asyncHandler(async (req, res) => {
     const { products } = req.body
@@ -17,14 +18,12 @@ export const createOrder = asyncHandler(async (req, res) => {
         productIds.push(product.productId)
     })
 
-    let sum
-    let orderedProducts
-    let orderQuantity
+    let sum    
 
     try {
-        orderedProducts = await Product.find().where('_id').in(productIds).exec()
+        const orderedProducts = await Product.find().where('_id').in(productIds).exec()
 
-        orderQuantity = products.reduce((previousValue, currentValue) => {
+        const orderQuantity = products.reduce((previousValue, currentValue) => {
             return previousValue + currentValue.quantity;
         }, 0);
 
@@ -42,24 +41,22 @@ export const createOrder = asyncHandler(async (req, res) => {
     res.status(201).json(order)
 })
 
-// FORTSÄTT HÄR
 export const getOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find()
-    .populate("user", "_id")
-    .populate({
-        path: "products",
-        populate: {
-            path: "product",
-            select: "ObjectId",
-            path: "quantity",
-            select: "Number"
-        }
-    })
-    .populate("totalPrice")
+    const id  = req.user._id
+
+    const user = await User.findById(id).exec()
+    if(!user) {
+        return res.status(404).json({ message: 'User not found' })
+    }
+
+    if(!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid id"})
+    }
+
+    const orders = await Order.find( { user: id })
+    .populate({ 
+        path: 'products.productId', model:'Product' })
+    .exec()
 
     res.status(200).json(orders)
-})
-
-export const getOrder = asyncHandler(async (req, res) => {
-
 })
