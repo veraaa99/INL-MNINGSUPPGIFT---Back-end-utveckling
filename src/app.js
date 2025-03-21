@@ -59,14 +59,16 @@
 // Order hantering: 
 // Om användaren är inloggad, ska användaren kunna spara en order i databasen. 
 // Varje order ska innehålla en array -> `products` där varje objekt innehåller `productId` och `quantity`. 
-// 
+// OK
 
 // Order-User relation: 
 // När ordern sparas, använd en Bearer token för att spara användarens id på ordern.
+// OK
 
 // Order historik: 
 // Användaren ska kunna hämta alla sina tidigare lagda ordrar 
 // genom att göra en GET och skicka med en Bearer token.
+// OK
 
 // Order-Product relation: 
 // När användaren hämtar sina tidigare lagda ordrar (via en GET-förfrågan till orderhistorik-endpointen), 
@@ -75,6 +77,7 @@
 // Använd en teknik som kallas "populering" (populating) för att inkludera den detaljerade produktinformationen i varje order. 
 // Säkerställ att denna information skickas korrekt som en del av API-svaret för att ge användaren fullständig information 
 // om varje produkt i deras tidigare lagda ordrar.
+// OK
 
 import express from 'express'
 import path from 'path'

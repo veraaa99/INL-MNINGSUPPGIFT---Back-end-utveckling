@@ -17,10 +17,3 @@ const OrderProducts = mongoose.model('OrderProducts', orderProductsSchema)
 const Order = mongoose.model('Order', orderSchema)
 
 export default Order 
-
- // products: [
-    //     { 
-    //         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true }, 
-    //         quantity: { type: Number, required: true }
-    //     }
- // ],

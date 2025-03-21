@@ -1,18 +1,17 @@
 import express from 'express'
 import { createProduct, deleteProduct, getProduct, getProducts, updateProduct } from '../controllers/product.controller.js'
+import { verifyToken } from '../middleware/verify.middleware.js'
 
 const router = express.Router()
 
-/// CRUD 
-
-router.post('/', createProduct) // CREATE
+router.post('/', verifyToken, createProduct) // CREATE
 
 router.get('/', getProducts) // READ
 router.get('/:id', getProduct) // READ
 
-router.put('/:id', updateProduct) // UPDATE
-router.patch('/:id', updateProduct) // UPDATE
+router.put('/:id', verifyToken, updateProduct) // UPDATE
+router.patch('/:id', verifyToken, updateProduct) // UPDATE
 
-router.delete('/:id', deleteProduct) // DELETE
+router.delete('/:id', verifyToken, deleteProduct) // DELETE
 
 export default router

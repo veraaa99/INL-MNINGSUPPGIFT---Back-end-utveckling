@@ -1,7 +1,8 @@
-import User from "../models/user.model.js";
 import asyncHandler from 'express-async-handler'
 import bcrypt from "bcryptjs";
 import { generateToken } from "../token/generateWebToken.js";
+
+import User from "../models/user.model.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
@@ -19,7 +20,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
     const token = generateToken(user)
 
-    res.status(201).json({ message: `User successfully created: _id: ${user._id}, email: ${user.email}, token: ${token}`})
+    res.status(201).json({ message: `User successfully created: \n _id: ${user._id}, \n email: ${user.email}, \n token: ${token}`})
 })
 
 export const loginUser = asyncHandler(async (req, res) => {

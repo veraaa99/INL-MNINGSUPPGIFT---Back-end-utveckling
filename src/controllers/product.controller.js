@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import Product from "../models/product.model.js"
 import asyncHandler from 'express-async-handler'
+import Product from "../models/product.model.js"
 
 export const createProduct = asyncHandler(async (req, res, next) => {
     const { name, price, description, category, images } = req.body
@@ -20,6 +20,10 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 export const getProducts = asyncHandler(async (req, res) => {
     const products = await Product.find().exec()
 
+    if(!products) {
+        return res.status(404).json({ message: 'No products could be found' })
+    }
+
     res.status(200).json(products)
 })
 
@@ -33,7 +37,7 @@ export const getProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(id).exec()
 
     if(!product) {
-        return res.status(404).json({ message: 'Can\'t find the product that you are looking for'})
+        return res.status(404).json({ message: 'Product could not be found'})
     }
 
     res.status(200).json(product)
@@ -66,10 +70,10 @@ export const updateProduct = asyncHandler(async (req, res) => {
     }
 
     if(Object.keys(toUpdate).length === 0){
-        res.status(400).json({ message: "No changes made to the product" })
+        res.status(400).json({ message: "No changes were made to the product" })
     }
 
-    const updatedProduct = await Products.findByIdAndUpdate(id, toUpdate, { new: true }).exec()
+    const updatedProduct = await Product.findByIdAndUpdate(id, toUpdate, { new: true }).exec()
     if(!updatedProduct) {
         return res.status(404).json({ message: 'Product could not be found' })
     }

@@ -1,5 +1,5 @@
-import app from './app.js'
 import mongoose from 'mongoose'
+import app from './app.js'
 
 const PORT = process.env.PORT || 9999
 const MONGO_URI = process.env.MONGO_URI
