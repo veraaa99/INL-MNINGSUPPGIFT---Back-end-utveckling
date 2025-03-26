@@ -22,13 +22,12 @@ export const createOrder = asyncHandler(async (req, res) => {
     // Create and fill an array with all productIds from the request body
     let productIds = []
     await products.forEach(product => {
+        // If a product is missing a productId, return an error message
+        if(product.productId == null){
+            return res.status(400).json({ message: "One or several products does not contain a productId"})
+        }
         productIds.push(product.productId)
     })
-
-    // If the productIds-array does not contain any Ids, return an error message
-    if(productIds.length == 0) {
-        return res.status(400).json({ message: "One or several invalid id:s"})
-    }
 
     // Variable to hold the total price sum of all products in the order
     let totalSum = 0

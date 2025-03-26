@@ -8,12 +8,24 @@ import User from "../models/user.model.js";
 
 // Register a new user (POST request)
 export const registerUser = asyncHandler(async (req, res) => {
-    // Get the user details (email + password) from the request body
-    const { email, password } = req.body
+    // Get the user details (email, password, repeated password) from the request body
+    const { email, password, repeatedPassword } = req.body
 
     // If no email or password is included, return an error message
-    if(!email || !password) {
-        return res.status(400).json({ message: 'Please enter an email address and a password to register a new user'})
+    if(!email || !password || !repeatedPassword) {
+        return res.status(400).json({ message: 'Please enter an email address, a password and repeat the password to register a new user'})
+    }
+
+    if(repeatedPassword !== password) {
+        return res.status(400).json({ message: 'Password and repeated password do not match'})
+    }
+
+    // Find the user in the database with a matching email address
+    const existingUser = await User.findOne({ email }).exec()
+
+    // If a user with a matching email address already exists, return an error message
+    if(existingUser) {
+        return res.status(401).json({ message: 'A user with this email address already exists' })
     }
 
     // Generate a new salt and hashed password
@@ -48,10 +60,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     }
 
     // Check and compare the request body's password with the password on the database
-    const match = await bcrypt.compare(password, user.password)
+    const matchPassword = await bcrypt.compare(password, user.password)
 
     // If the passwords do not match, return an error message
-    if(!match) {
+    if(!matchPassword) {
         return res.status(401).json({ message: 'Invalid credentials' })
     }
 
