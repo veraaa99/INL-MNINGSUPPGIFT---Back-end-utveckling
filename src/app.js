@@ -79,6 +79,8 @@
 // om varje produkt i deras tidigare lagda ordrar.
 // OK
 
+// Express application 
+
 import express from 'express'
 import path from 'path'
 
@@ -89,19 +91,25 @@ import orderRoutes from './routes/order.route.js'
 
 import { errorHandler, notFound } from './middleware/error.middleware.mjs'
 
+// Create new Express application
+// Create an absolute path (to find the view-folder)
 const app = express()
 const __dirname = path.resolve();
 
+// Parse URL-encoded data with querystring library
 app.use(express.json({ extended: false }));
 
+// Use product router, message router, user router and order router
 app.use('/api/products', productRoutes)
 app.use('/api/messages', messageRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 
+// Create the final path to the view folder
 app.use(express.static(path.join(__dirname, './view')));
 
-app.use(notFound) // NotFound
-app.use(errorHandler) // ErrorHandler
+// Use NotFound and ErrorHandler middleware
+app.use(notFound)
+app.use(errorHandler)
 
 export default app
