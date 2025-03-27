@@ -91,11 +91,14 @@ import orderRoutes from './routes/order.route.js'
 
 import { errorHandler, notFound } from './middleware/error.middleware.mjs'
 
+import cors from 'cors'
+
 // Create new Express application
 // Create an absolute path (to find the view-folder)
 const app = express()
 const __dirname = path.resolve();
 
+app.use(cors())
 // Parse URL-encoded data with querystring library
 app.use(express.json({ extended: false }));
 

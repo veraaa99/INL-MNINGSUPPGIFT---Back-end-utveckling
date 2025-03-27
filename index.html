@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRODUCTS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Products: </h1>
+
+    <div>
+        <form id="productForm">
+            <label for="name">Product name:</label>
+            <input type="text" name="name" id="name" required>
+
+            <label for="price">Price:</label>
+            <input type="number" name="price" id="price" required>
+
+            <label for="description">Description:</label>
+            <input type="text" name="description" id="description">
+
+            <label for="category">Category:</label>
+            <input type="text" name="category" id="category">
+
+            <label for="images">Add product images:</label>
+            <input type="file" name="images" id="images" accept="image/png, image/jpeg" multiple>
+            <!-- <input type="text" name="images" id="images"> -->
+
+            <button type="submit" id="submit">Add product</button>
+        </form>
+    </div>
+
+    <div>
+        <form id="messageForm">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name">
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email">
+
+            <label for="message">Message:</label>
+            <input type="text" name="message" id="message">
+
+            <button type="submit" id="submit">Add product</button>
+        </form>
+    </div>
+
+    <div>
+        <ul id="productList">
+            <form id="editForm">
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name">
+
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email">
+
+                <label for="message">Message:</label>
+                <input type="text" name="message" id="message">
+
+                <button type="submit" id="submit">Add product</button>
+            </form>
+        </ul>
+    </div>
+
+    <script type="text/javascript" src="renderer.js"></script>
+</body>
+</html>
