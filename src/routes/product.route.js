@@ -9,7 +9,9 @@ const router = express.Router()
 
 // (POST request):
 // Create new product
-router.post('/', verifyToken, createProduct) // CREATE
+router.post('/', 
+    // verifyToken, 
+    createProduct) // CREATE
 
 // (GET request):
 // Get all products

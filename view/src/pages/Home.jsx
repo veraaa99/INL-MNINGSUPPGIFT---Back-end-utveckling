@@ -7,7 +7,6 @@ const Home = () => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-
     const getProducts = async() => {
       try {
         const res = await axios.get('/api/products')
@@ -46,7 +45,7 @@ const Home = () => {
                       <p className='pt-2'>Price: {product.price} kr</p>
                     </div>
                     <div className='grid justify-items-center py-2'>
-                    <button type="button"></button>
+                    <button type="button">Add to cart</button>
                     {/* <SetQuantityButton product={product} /> */}
                     </div>
                   </div>

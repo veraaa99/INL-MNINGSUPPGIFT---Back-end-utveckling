@@ -15,6 +15,16 @@ export const createProduct = asyncHandler(async (req, res, next) => {
         return res.status(400).json({ message: "Please enter a product name and a price" })
     }
 
+    if(description == '') {
+        description = null
+    }
+    if(category == '') {
+        category = null
+    }
+    if(images == '') {
+        images = null
+    }
+
     // Create and save a new product on the database
     const product = await Product.create({ name, price, description, category, images })
     // Return a status 201 and the created product
