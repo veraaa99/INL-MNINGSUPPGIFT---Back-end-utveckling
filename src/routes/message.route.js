@@ -9,6 +9,8 @@ const router = express.Router()
 
 // (POST request):
 // Create new messsage
-router.post('/', verifyToken, sendMessage)
+router.post('/', 
+    // verifyToken, 
+    sendMessage)
 
 export default router

@@ -7,20 +7,27 @@ function ProductContextProvider({ children }) {
 
     const [products, setProducts] = useState([])
 
-    const createProduct = async ( data ) => {
+    const getProducts = async() => {
+          try {
+            let res = await axios.get('/api/products')
+            if(res.status !== 200) return
+      
+            setProducts(res.data)
+          }
+          catch(error) {
+            console.log(error.message)
+          }
+    }
 
-        // const data = {
-        //     name: data.name,
-        //     price: data.price,
-        //     description: data.description,
-        //     category: data.category,
-        //     images: data.images
-        // }
-
+    const createProduct = async( data ) => {
+        console.log(data)
         try {
-            let response = await axios.post('api/products', data)
-            if(response.status === 201){
+            const response = await axios.post('api/products', data)
 
+            console.log(response)
+
+            if(response.status === 201){
+                
                 setProducts({
                     name: response.name,
                     price: response.price,
@@ -29,13 +36,17 @@ function ProductContextProvider({ children }) {
                     images: response.images
                 })
             }
+            return
         } catch (error) {
             console.error(error.message)
         }
     }
 
     const values = {
-        createProduct
+        createProduct,
+        getProducts,
+        products, 
+        setProducts
     }
 
     return (
@@ -47,7 +58,6 @@ function ProductContextProvider({ children }) {
 }
 
 export default ProductContextProvider
-
 
 export const useProductContext = () => {
     const context = useContext(ProductContext)

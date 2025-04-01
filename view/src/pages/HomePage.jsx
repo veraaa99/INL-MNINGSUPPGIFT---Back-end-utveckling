@@ -1,24 +1,13 @@
 import { useEffect, useState } from "react"
 import axios from "../axios_api/axios"
 import { Link } from "react-router"
+import { useProductContext } from "../contexts/ProductContext"
 
-const Home = () => {
+const HomePage = () => {
 
-  const [products, setProducts] = useState([])
+  const { getProducts, products } = useProductContext()
 
   useEffect(() => {
-    const getProducts = async() => {
-      try {
-        const res = await axios.get('/api/products')
-        if(res.status !== 200) return
-  
-        // const data = res.json()
-        setProducts(res.data)
-      }
-      catch(error) {
-        console.log(error.message)
-      }
-    }
     getProducts()
   }, [])
 
@@ -31,7 +20,7 @@ const Home = () => {
         <ul className='grid md:grid-cols-2 sm:grid-cols-1 gap-10 md:gap-20 md:m-15 px-20 justify-center'>
             { 
             !!products.length
-            ? products.map((product) => (
+            ? products.slice(0, 5).map((product) => (
                 <div className='flex flex-col text-sm justify-center' key={product._id}>
                   <div>
                     <Link to={`/products/${product._id}`}>
@@ -61,4 +50,4 @@ const Home = () => {
     </div>
   )
 }
-export default Home
+export default HomePage

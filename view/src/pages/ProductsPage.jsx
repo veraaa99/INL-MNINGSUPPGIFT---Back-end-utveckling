@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
-import axios from "../axios_api/axios"
 import { Link, useNavigate } from "react-router"
 import { useProductContext } from "../contexts/ProductContext"
 
-const Products = () => {
+const ProductsPage = () => {
 
-  const [products, setProducts] = useState([])
-  const [formData, setformData] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     price: '',
     description: '',
@@ -17,20 +15,43 @@ const Products = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const { createProduct } = useProductContext()
+  const { getProducts, createProduct, products } = useProductContext()
   const navigate = useNavigate()
 
-  const handleSubmit = async e => {
+  const handleChange = e => {
+    setFormData(state => ({
+      ...state,
+      [e.target.id]: e.target.value
+    }))
+    console.log(formData)
+  }
+
+  const handleSubmit = async(e) => {
+
     e.preventDefault()
-    if(!formData.name || !formData.price || !formData.description || !formData.category || !formData.images){
-        setError('Please fill in all fields')
+    setLoading(true)
+    setError('')
+
+    if(formData.name === '' || formData.price == '' 
+      // || !formData.description || !formData.category || !formData.images
+    ){
+        setError('Please fill in name and price')
+        console.log(error)
+        setLoading(false)
         return
     } 
 
     setLoading(true)
     setError('')
     try {
-        await createProduct(formData)
+        createProduct(formData)
+        setFormData({
+          name: '',
+          price: '',
+          description: '',
+          category: '',
+          images: []
+        })
         navigate('/')
         
     } catch (error) {
@@ -43,17 +64,6 @@ const Products = () => {
   }
 
   useEffect(() => {
-    const getProducts = async() => {
-      try {
-        const res = await axios.get('/api/products')
-        if(res.status !== 200) return
-  
-        setProducts(res.data)
-      }
-      catch(error) {
-        console.log(error.message)
-      }
-    }
     getProducts()
   }, [])
 
@@ -76,7 +86,7 @@ const Products = () => {
   
                 <div className='flex flex-row justify-between mt-3 flex-wrap'>
                   <div className="mr-4">
-                    <li><Link className='md:text-lg sm:text-base' to={`/Products/${product._id}`}>{product.name}</Link></li>
+                    <li><Link className='md:text-lg sm:text-base' to={`/products/${product._id}`}>{product.name}</Link></li>
                     <p className='pt-2'>Price: {product.price} kr</p>
                   </div>
                   <div className='grid justify-items-center py-2'>
@@ -96,27 +106,27 @@ const Products = () => {
         <form id="productForm" onSubmit={handleSubmit}>
             <h2 className='text-2xl p-5 my-5'>Add a new product to the collection: </h2>
             <div className='flex flex-col'>
-              <label htmlFor="name">Product name: </label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="name" id="name"/>
+              <label htmlFor="name">Product name: *</label>
+              <input className="border-1 border-solid rounded-md mb-5" type="text" name="name" id="name" value={formData.name} onChange={handleChange}/>
 
-              <label htmlFor="price">Price: </label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="price" id="price"/>
+              <label htmlFor="price">Price: *</label>
+              <input className="border-1 border-solid rounded-md mb-5" type="text" name="price" id="price" value={formData.price} onChange={handleChange}/>
 
               <label htmlFor="description">Description: </label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="description" id="description"/>
+              <input className="border-1 border-solid rounded-md mb-5" type="text" name="description" id="description" value={formData.description} onChange={handleChange}/>
 
               <label htmlFor="category">Category: </label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="category" id="category"/>
+              <input className="border-1 border-solid rounded-md mb-5" type="text" name="category" id="category" value={formData.category} onChange={handleChange}/>
 
               <label htmlFor="images">Add product images (URL:s): </label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="images" id="images"/>
+              <input className="border-1 border-solid rounded-md mb-5" type="text" name="images" id="images" value={formData.images} onChange={handleChange}/>
 
-              <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Add new product</button>
             </div>
+              <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Add new product</button>
         </form>
 
       </div>
     </div>
   )
 }
-export default Products
+export default ProductsPage

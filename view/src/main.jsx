@@ -7,14 +7,17 @@ import RootLayout from './layouts/RootLayout.jsx'
 import AuthorizedLayout from './layouts/AuthorizedLayout.jsx'
 import PrivateLayout from './layouts/PrivateLayout.jsx'
 
-import Home from './pages/Home.jsx'
-import Login from './pages/Login.jsx'
-import Register from './pages/Register.jsx'
-import Products from './pages/Products.jsx'
-import UserProfile from './pages/UserProfile.jsx'
-import Order from './pages/Order.jsx'
-import ProductDetails from './pages/ProductDetails.jsx'
+import HomePage from './pages/HomePage.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
+import ProductsPage from './pages/ProductsPage.jsx'
+import UserProfilePage from './pages/UserProfilePage.jsx'
+import OrderPage from './pages/OrderPage.jsx'
+import ProductDetailsPage from './pages/ProductDetailsPage.jsx'
+import MessagePage from './pages/MessagePage.jsx'
+
 import ProductContextProvider from './contexts/ProductContext.jsx'
+import UserContextProvider from './contexts/UserContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -23,15 +26,19 @@ const router = createBrowserRouter([
     children: [
       { 
         index: true, 
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: 'products',
-        element: <Products />
+        element: <ProductsPage />
       },
       {
-        path: 'products:id',
-        element: <ProductDetails />
+        path: 'products/:id',
+        element: <ProductDetailsPage />
+      },
+      {
+        path: 'messages',
+        element: <MessagePage />
       },
       
       {
@@ -39,11 +46,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'login',
-            element: <Login />
+            element: <LoginPage />
           },
           {
             path: 'register',
-            element: <Register />
+            element: <RegisterPage />
           }
         ]
       },
@@ -53,11 +60,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'profile',
-            element: <UserProfile />
+            element: <UserProfilePage />
           },
           {
             path: 'order',
-            element: <Order />
+            element: <OrderPage />
           }
         ]
       }
@@ -67,8 +74,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ProductContextProvider>
-      <RouterProvider router={router} />
-    </ProductContextProvider>
+    <UserContextProvider>
+      <ProductContextProvider>
+        <RouterProvider router={router} />
+      </ProductContextProvider>
+    </UserContextProvider>
   </StrictMode>
 )

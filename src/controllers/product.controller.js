@@ -8,21 +8,21 @@ import Product from "../models/product.model.js"
 // Create a new product (POST request)
 export const createProduct = asyncHandler(async (req, res, next) => {
     // Get the product details (name, price, description, category and images) from the request body
-    const { name, price, description, category, images } = req.body
+    let { name, price, description, category, images } = req.body
 
     // If no name or price is included, return an error message
     if(!name || !price) {
         return res.status(400).json({ message: "Please enter a product name and a price" })
     }
 
-    if(description == '') {
-        description = null
+    if(description == '' || description == "") {
+        description = undefined
     }
-    if(category == '') {
-        category = null
+    if(category == '' || category == "") {
+        category = undefined
     }
-    if(images == '') {
-        images = null
+    if(images == '' || images == "") {
+        images = undefined
     }
 
     // Create and save a new product on the database
