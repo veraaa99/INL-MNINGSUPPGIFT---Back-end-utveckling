@@ -32,6 +32,7 @@ const HomePage = () => {
                     <div>
                       <li><Link className='md:text-xl' to={`/products/${product._id}`}>{product.name}</Link></li>
                       <p className='pt-2'>Price: {product.price} kr</p>
+                      <p className='pt-2'>Category: {product.category}</p>
                     </div>
                     <div className='grid justify-items-center py-2'>
                     <button type="button">Add to cart</button>

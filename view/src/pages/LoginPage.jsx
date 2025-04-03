@@ -13,7 +13,7 @@ function LoginPage() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    const { login, rememberUser, toggleRememberUser } = useUserContext()
+    const { login, rememberUser, toggleRememberUser, user} = useUserContext()
     const navigate = useNavigate()
     const location = useLocation()
 

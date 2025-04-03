@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 export const verifyToken = (req, res, next) => {
     try {
         const authorizationHandler = req.headers.authorization || req.headers.Authorization
-        if(!authorizationHandler.includes('Bearer ')){
+        if(!authorizationHandler.includes('Bearer')){
             return res.status(401).json({ message: 'You are not authenticated. No token was provided' })
         }
 

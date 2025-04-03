@@ -53,13 +53,18 @@ const ProductsPage = () => {
           images: []
         })
         navigate('/')
+        return
         
     } catch (error) {
         setError(error.response?.data?.message || 'Something went wrong')
         console.log(error)
+        return
+
     } 
     finally {
         setLoading(false)
+        return
+
     }
   }
 
@@ -88,6 +93,7 @@ const ProductsPage = () => {
                   <div className="mr-4">
                     <li><Link className='md:text-lg sm:text-base' to={`/products/${product._id}`}>{product.name}</Link></li>
                     <p className='pt-2'>Price: {product.price} kr</p>
+                    <p className='pt-2'>Category: {product.category}</p>
                   </div>
                   <div className='grid justify-items-center py-2'>
                   <button type="button">Add to cart</button>
@@ -121,8 +127,8 @@ const ProductsPage = () => {
               <label htmlFor="images">Add product images (URL:s): </label>
               <input className="border-1 border-solid rounded-md mb-5" type="text" name="images" id="images" value={formData.images} onChange={handleChange}/>
 
-            </div>
               <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Add new product</button>
+            </div>
         </form>
 
       </div>

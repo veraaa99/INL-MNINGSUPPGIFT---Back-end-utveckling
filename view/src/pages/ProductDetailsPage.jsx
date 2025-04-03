@@ -66,6 +66,7 @@ function ProductDetailsPage() {
           </div>
           <div className='p-8'>
             <p className='pb-7' >Price: {product.price} kr</p>
+            <p className='pt-2'>Category: {product.category}</p>
             {/* <SetQuantityButton product={product} /> */}
           </div>
         </div>

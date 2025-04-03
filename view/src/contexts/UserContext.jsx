@@ -5,38 +5,44 @@ export const UserContext = createContext()
 
 const UserContextProvider = ({ children }) => {
 
-  const [user, setUser] = useState('')
-  const [token, setToken] = useState('')
+  const [user, setUser] = useState(null)
+  const [token, setToken] = useState(null)
   // const [userReady, setUserReady] = useState(false)
   const [rememberUser, setRememberUser] = useState(false)
 
-  const register = async (credentials) => {
-      const res = await axios.post('api/auth/register', credentials)
-      if(res.status === 201){
-          setToken(res.data.token)
-          setUser({
-              _id: res.data._id,
-              name: res.data.name,
-              role: res.data.role
-          })
-      }
+  const register = async (userInformation) => {
+      const res = await axios.post('api/users/register', userInformation)
+
+      if(!res.status === 201) return
+      
+      setToken(res.data.userToken)
+      setUser({
+         _id: res.data._id,
+         email: res.data.email,
+      })
+
       if(rememberUser) {
-          sessionStorage.setItem('jwt', res.data.token)
+          sessionStorage.setItem('jwt', res.data.userToken)
       }
   }
 
   const login = async (userInformation) => {
       const res = await axios.post('api/users/login', userInformation)
       console.log(res)
-      if(res.status === 200){
-          setToken(res.data.token)
-          setUser({
-              _id: res.data._id,
-              name: res.data.name,
-          })
-      }
+      console.log(res.data.userToken)
+      console.log(res.data._id)
+      console.log(res.data.email)
+
+      if(!res.status === 200) return
+      
+      setToken(res.data.userToken)
+      setUser({
+         _id: res.data._id,
+         email: res.data.email,
+      })
+      
       if(rememberUser) {
-          sessionStorage.setItem('jwt', res.data.token)
+          sessionStorage.setItem('jwt', res.data.userToken)
       }
   }
   

@@ -13,9 +13,13 @@ function ProductContextProvider({ children }) {
             if(res.status !== 200) return
       
             setProducts(res.data)
+            return
+
           }
           catch(error) {
             console.log(error.message)
+            return
+
           }
     }
 
@@ -23,8 +27,6 @@ function ProductContextProvider({ children }) {
         console.log(data)
         try {
             const response = await axios.post('api/products', data)
-
-            console.log(response)
 
             if(response.status === 201){
                 
@@ -36,9 +38,11 @@ function ProductContextProvider({ children }) {
                     images: response.images
                 })
             }
+            
             return
         } catch (error) {
             console.error(error.message)
+            return
         }
     }
 

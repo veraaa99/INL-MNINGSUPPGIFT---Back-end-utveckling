@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 
 import RootLayout from './layouts/RootLayout.jsx'
 import AuthorizedLayout from './layouts/AuthorizedLayout.jsx'
-import PrivateLayout from './layouts/PrivateLayout.jsx'
+import UserLayout from './layouts/UserLayout.jsx'
 
 import HomePage from './pages/HomePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
       },
 
       { 
-        element: <PrivateLayout />,
+        element: <UserLayout />,
         children: [
           {
             path: 'profile',

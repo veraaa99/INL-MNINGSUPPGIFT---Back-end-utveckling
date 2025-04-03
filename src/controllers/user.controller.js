@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../token/generateWebToken.js";
 
 import User from "../models/user.model.js";
+import mongoose from 'mongoose';
 
 // Register a new user (POST request)
 export const registerUser = asyncHandler(async (req, res) => {
@@ -89,12 +90,31 @@ export const getUsers = asyncHandler(async (req, res) => {
 })
 
 // Get one user (GET request)
-export const getUser = asyncHandler(async (req, res) => {
+export const getUserById = asyncHandler(async (req, res) => {
     // Get the id of the product from the request parameter
     const { id } = req.params
 
     // Find the user in the database with a matching id (excluding the password)
     const user = await User.findById(id).select("-password").exec()
+
+    // If no user with a matching id could be found, return an error message
+    if(!user) {
+        return res.status(404).json({ message: 'User could not be found' })
+    }
+
+    // Return a status 200 and the user
+    res.status(200).json(user)
+})
+
+// Get one user (GET request)
+export const getUserByToken = asyncHandler(async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.user._id)) {
+            return res.status(400).json({ message: "Invalid id"})
+    }
+
+    // Find the user in the database with a matching id (excluding the password)
+    const user = await User.findById(req.user._id, "-password").exec()
 
     // If no user with a matching id could be found, return an error message
     if(!user) {
