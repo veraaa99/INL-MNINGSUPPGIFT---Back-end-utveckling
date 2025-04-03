@@ -2,10 +2,12 @@ import { useEffect, useState } from "react"
 import axios from "../axios_api/axios"
 import { Link } from "react-router"
 import { useProductContext } from "../contexts/ProductContext"
+import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 
 const HomePage = () => {
 
   const { getProducts, products } = useProductContext()
+  const { addProductToCart } = useShoppingCartContext()
 
   useEffect(() => {
     getProducts()
@@ -35,8 +37,7 @@ const HomePage = () => {
                       <p className='pt-2'>Category: {product.category}</p>
                     </div>
                     <div className='grid justify-items-center py-2'>
-                    <button type="button">Add to cart</button>
-                    {/* <SetQuantityButton product={product} /> */}
+                    <button className="border-1 border-amber-200 rounded-xl px-5" type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
                     </div>
                   </div>
                 </div>

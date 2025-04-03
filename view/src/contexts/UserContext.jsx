@@ -28,10 +28,6 @@ const UserContextProvider = ({ children }) => {
 
   const login = async (userInformation) => {
       const res = await axios.post('api/users/login', userInformation)
-      console.log(res)
-      console.log(res.data.userToken)
-      console.log(res.data._id)
-      console.log(res.data.email)
 
       if(!res.status === 200) return
       
@@ -50,6 +46,7 @@ const UserContextProvider = ({ children }) => {
       sessionStorage.removeItem('jwt')
       setToken(null)
       setUser(null)
+      return
   }
 
   const toggleRememberUser = () => {

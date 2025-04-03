@@ -26,7 +26,8 @@ export const createOrder = asyncHandler(async (req, res) => {
         if(product.productId == null){
             return res.status(400).json({ message: "One or several products does not contain a productId"})
         }
-        productIds.push(product.productId)
+
+        productIds.push(product.productId).exec()
     })
 
     // Variable to hold the total price sum of all products in the order
@@ -64,7 +65,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     }
 
     // Create and save a new order on the database (with the user, the products (id and quantity) and the total price of the order)
-    const order = await Order.create({ user, products, totalPrice: totalSum })
+    const order = await Order.create({ user, products, totalPrice: totalSum }).exec()
     // Return a status 201 and the created order
     res.status(201).json(order)
 })

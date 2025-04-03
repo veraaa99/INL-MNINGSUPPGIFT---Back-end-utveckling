@@ -29,11 +29,14 @@ function LoginPage() {
         try {
             await login(userInformation)
             navigate('/')
+            return
             
         } catch (error) {
             setError(error.response?.data?.message || 'Something went wrong')
+            return
         } finally {
             setLoading(false)
+            return
         }
     }
 

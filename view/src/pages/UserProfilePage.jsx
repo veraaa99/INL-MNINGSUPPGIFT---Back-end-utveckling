@@ -4,7 +4,7 @@ import axios from "../axios_api/axios"
 
 const UserProfilePage = () => {
 
-  const { token } = useUserContext()
+  const { token, logout } = useUserContext()
   const [user, setUser] = useState('')
   const [orders, setOrders] = useState([])
 
@@ -23,9 +23,11 @@ const UserProfilePage = () => {
         
       } catch (error) {
         console.log(error.response?.data?.message || 'Something went wrong')
+        return
       }
     }
     getUser()
+    return
   }, [])
 
   useEffect(() => {
@@ -43,19 +45,25 @@ const UserProfilePage = () => {
         
       } catch (error) {
         console.log(error.response?.data?.message || 'Something went wrong')
+        return
       }
   
     }
     getUserOrders()
+    return
   }, [])
-  
 
+  const handleLogout = () => {
+    logout()
+    return
+  }
+  
   return (
     <div className="m-auto p-10">
       <h1 className='text-5xl justify-self-center p-5'>USER</h1>
       <div>
         <h2 className='text-xl justify-self-start p-5'>Email</h2>
-        <p>{user.email}</p>
+        <p className='p-2 mx-4'>{user.email}</p>
       </div>
       <div>
         <h3 className='text-lg justify-self-start p-5'>Shopping cart: </h3>
@@ -64,32 +72,30 @@ const UserProfilePage = () => {
           { 
             !!orders.length
             ? orders.map((order) => (
-              <div className='flex flex-col text-sm' key={order._id}>
+              <div className='flex flex-col text-sm border-1 rounded-2xl mb-5' key={order._id}>
   
                 <div className='flex flex-row justify-between mt-3 flex-wrap'>
-                  <div className="mr-4">
-
-                    {/* <p className='pt-2'>Category: {order.products.productId.category}</p> */}
-                  </div>
-                  <div className='grid justify-items-center py-2'>
-                  <button type="button">Add to cart</button>
-                  </div>
                 </div>
 
                       { 
                         order.products.map((product) => {
                           
                           return (
-                            <ul key={product.productId._id}>
-                              <li className='p-2'> Product: {product.productId.name}</li>
-                              <li className='p-2'>Price: {product.productId.price} kr</li>
+                            <ul className="mx-5" key={product.productId._id}>
+                              <div className="w-full h-full mb-5">
+                                <li className='p-2'> Product: {product.productId.name}</li>
+                                <li className='p-2'>Price: {product.productId.price} kr</li>
+                                <div>
+                                  <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button">Add to cart</button>
+                                </div>
+                              </div>
                             </ul>
                           )
                       
                         })
                       }
 
-                <p className='p-2'>Total order price: {order.totalPrice}</p>
+                <p className='p-2 mx-5 my-4'>Total order price: {order.totalPrice}</p>
                 
               </div>
               ))
@@ -99,8 +105,8 @@ const UserProfilePage = () => {
           }  
         </div>
       </div>
-      <div>
-      <button className='text-lg justify-self-start m-4 p-5 border-2 rounded-2xl' type="button">Logout</button>      
+      <div className="mt-10">
+      <button className='text-lg justify-self-start p-5 py-3 border-2 rounded-2xl' type="button" onClick={handleLogout}>Logout</button>      
       </div>
     </div>
   )

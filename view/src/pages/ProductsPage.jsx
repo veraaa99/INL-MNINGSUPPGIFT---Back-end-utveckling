@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { useProductContext } from "../contexts/ProductContext"
+import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 
 const ProductsPage = () => {
 
@@ -16,6 +17,8 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false)
 
   const { getProducts, createProduct, products } = useProductContext()
+    const { addProductToCart } = useShoppingCartContext()
+
   const navigate = useNavigate()
 
   const handleChange = e => {
@@ -27,22 +30,10 @@ const ProductsPage = () => {
   }
 
   const handleSubmit = async(e) => {
-
     e.preventDefault()
     setLoading(true)
     setError('')
-
-    if(formData.name === '' || formData.price == '' 
-      // || !formData.description || !formData.category || !formData.images
-    ){
-        setError('Please fill in name and price')
-        console.log(error)
-        setLoading(false)
-        return
-    } 
-
-    setLoading(true)
-    setError('')
+    
     try {
         createProduct(formData)
         setFormData({
@@ -52,18 +43,25 @@ const ProductsPage = () => {
           category: '',
           images: []
         })
-        navigate('/')
-        return
         
-    } catch (error) {
-        setError(error.response?.data?.message || 'Something went wrong')
-        console.log(error)
-        return
+        if(formData.name === '' || formData.price == '' ){
+          setError('Please fill in name and price')
+          console.log(error)
+          setLoading(false)
+          return
+        } 
+        
+        setLoading(true)
+        setError('')
+        navigate('/')
+        
+    } catch (err) {
+        setError(err.response?.data?.message || 'Something went wrong')
+        console.log(err)
 
     } 
     finally {
         setLoading(false)
-        return
 
     }
   }
@@ -96,7 +94,7 @@ const ProductsPage = () => {
                     <p className='pt-2'>Category: {product.category}</p>
                   </div>
                   <div className='grid justify-items-center py-2'>
-                  <button type="button">Add to cart</button>
+                  <button className="border-1 border-amber-200 rounded-xl px-5" type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
                   </div>
                 </div>
               </div>

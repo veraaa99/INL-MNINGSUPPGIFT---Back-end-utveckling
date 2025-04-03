@@ -12,12 +12,13 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import ProductsPage from './pages/ProductsPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
-import OrderPage from './pages/OrderPage.jsx'
 import ProductDetailsPage from './pages/ProductDetailsPage.jsx'
 import MessagePage from './pages/MessagePage.jsx'
+import CheckoutPage from './pages/CheckoutPage.jsx'
 
 import ProductContextProvider from './contexts/ProductContext.jsx'
 import UserContextProvider from './contexts/UserContext.jsx'
+import ShoppingCartContextProvider from './contexts/ShoppingCartContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -63,8 +64,8 @@ const router = createBrowserRouter([
             element: <UserProfilePage />
           },
           {
-            path: 'order',
-            element: <OrderPage />
+            path: 'orders',
+            element: <CheckoutPage />
           }
         ]
       }
@@ -75,9 +76,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserContextProvider>
-      <ProductContextProvider>
-        <RouterProvider router={router} />
-      </ProductContextProvider>
+      <ShoppingCartContextProvider>
+        <ProductContextProvider>
+          <RouterProvider router={router} />
+        </ProductContextProvider>
+      </ShoppingCartContextProvider>
     </UserContextProvider>
   </StrictMode>
 )

@@ -30,11 +30,11 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
 
     // Generate a new salt and hashed password
-    const salt = await bcrypt.genSalt(15)
-    const newHashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcrypt.genSalt(15).exec()
+    const newHashedPassword = await bcrypt.hash(password, salt).exec()
 
     // Create and save a new user on the database
-    const user = await User.create({ email, password: newHashedPassword })
+    const user = await User.create({ email, password: newHashedPassword }).exec()
 
     // Generate a new token for the user (to use for authorization)
     const userToken = generateToken(user)

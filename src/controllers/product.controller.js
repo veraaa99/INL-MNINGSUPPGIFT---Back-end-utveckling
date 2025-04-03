@@ -14,6 +14,12 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     if(!name || !price) {
         return res.status(400).json({ message: "Please enter a product name and a price" })
     }
+    if(name == '' || name == "") {
+        return res.status(400).json({ message: "Please enter a product name and a price" })
+    }
+    if(price == '' || price == "") {
+        return res.status(400).json({ message: "Please enter a product name and a price" })
+    }
 
     if(description == '' || description == "") {
         description = undefined
