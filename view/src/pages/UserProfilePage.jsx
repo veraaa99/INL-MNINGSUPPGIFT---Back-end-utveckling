@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react"
-import { useUserContext } from "../contexts/UserContext"
 import axios from "../axios_api/axios"
+import { useEffect, useState } from "react"
+import { NavLink } from "react-router"
+import { useUserContext } from "../contexts/UserContext"
+import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 
 const UserProfilePage = () => {
 
   const { token, logout } = useUserContext()
+  const { orderProducts } = useShoppingCartContext()
+
   const [user, setUser] = useState('')
   const [orders, setOrders] = useState([])
 
@@ -67,7 +71,26 @@ const UserProfilePage = () => {
       </div>
       <div>
         <h3 className='text-lg justify-self-start p-5'>Shopping cart: </h3>
-        <h3 className='text-lg justify-self-start p-5'>My orders: </h3>
+        { 
+          !!orderProducts.length 
+          ? 
+          <>
+              <div className="border-b p-2 w-full space-y-2 max-h-40 overflow-y-auto scrollbar">
+                  {
+                    orderProducts.map((orderProduct) => (
+                      <div key={orderProduct.product._id}>
+                        <p>{orderProduct.product.name}</p>
+                        <p>{orderProduct.quantity}</p>
+                        <button className='block p-2 bg-amber-300 rounded-xl' type="button">Add to cart</button>
+                      </div>
+                    ))
+                  }
+              </div>
+              <button className='cursor-pointer hover:bg-indigo-400 hover:text-white m-3 p-3 border-3 border-solid border-slate-400 rounded-md text-lg'><NavLink to="/orders">Checkout</NavLink></button>
+          </>
+          : 'Your cart is empty'
+        }
+        <h3 className='text-lg justify-self-start p-5'>Previous orders:: </h3>
         <div>
           { 
             !!orders.length
@@ -79,19 +102,14 @@ const UserProfilePage = () => {
 
                       { 
                         order.products.map((product) => {
-                          
                           return (
                             <ul className="mx-5" key={product.productId._id}>
                               <div className="w-full h-full mb-5">
                                 <li className='p-2'> Product: {product.productId.name}</li>
                                 <li className='p-2'>Price: {product.productId.price} kr</li>
-                                <div>
-                                  <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button">Add to cart</button>
-                                </div>
                               </div>
                             </ul>
                           )
-                      
                         })
                       }
 

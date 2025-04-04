@@ -17,7 +17,7 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(false)
 
   const { getProducts, createProduct, products } = useProductContext()
-    const { addProductToCart } = useShoppingCartContext()
+  const { addProductToCart } = useShoppingCartContext()
 
   const navigate = useNavigate()
 
@@ -94,7 +94,7 @@ const ProductsPage = () => {
                     <p className='pt-2'>Category: {product.category}</p>
                   </div>
                   <div className='grid justify-items-center py-2'>
-                  <button className="border-1 border-amber-200 rounded-xl px-5" type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
+                  <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
                   </div>
                 </div>
               </div>

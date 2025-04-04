@@ -1,10 +1,12 @@
+import axios from "../axios_api/axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import axios from "../axios_api/axios"
+import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 
 function ProductDetailsPage() {
 
   const { id } = useParams()
+  const { addProductToCart } = useShoppingCartContext
 
   const [product, setProduct] = useState({})
   const [imgSrc, setImgSrc] = useState([])
@@ -67,7 +69,9 @@ function ProductDetailsPage() {
           <div className='p-8'>
             <p className='pb-7' >Price: {product.price} kr</p>
             <p className='pt-2'>Category: {product.category}</p>
-            {/* <SetQuantityButton product={product} /> */}
+          </div>
+          <div>
+          <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
           </div>
         </div>
 

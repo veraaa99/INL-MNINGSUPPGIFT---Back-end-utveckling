@@ -8,7 +8,8 @@ const Navbar = () => {
   const { user } = useUserContext()
   const [isCartOpen, setIsCartOpen] = useState(false)
 
-  const { getShoppingCartProducts, orderProducts } = useShoppingCartContext()
+  const { getShoppingCartProducts, orderProducts, addProductToCart,
+    removeOneQuantityFromCart, removeProductFromCart, getTotalSum } = useShoppingCartContext()
 
   useEffect(() => {
     getShoppingCartProducts()
@@ -36,12 +37,19 @@ const Navbar = () => {
                   <>
                       <div className="border-b p-2 w-full space-y-2 max-h-40 overflow-y-auto scrollbar">
                           {
-                            orderProducts.map((product) => (
-                              <div key={product._id}>
-                                <p>{product.name}</p>
+                            orderProducts.map((orderProduct) => (
+                              <div key={orderProduct.product._id}>
+                                <p>{orderProduct.product.name}</p>
+                                <p>{orderProduct.quantity}</p>
+                                <button className='inline m-1 p-1 bg-amber-300 rounded-lg text-sm' type="button" onClick={() => addProductToCart(orderProduct.product)}>Add one</button>
+                                <button className='inline m-1 p-1 bg-orange-600 rounded-lg  text-sm' type="button" onClick={() => removeOneQuantityFromCart(orderProduct.product)}>Remove one</button>
+                                <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm' type="button" onClick={() => removeProductFromCart(orderProduct.product)}>Remove all</button>
                               </div>
                             ))
                           }
+                        <div>
+                          <p>Total price: {getTotalSum()} kr</p>
+                        </div>
                       </div>
                       <button className='cursor-pointer hover:bg-indigo-400 hover:text-white m-3 p-3 border-3 border-solid border-slate-400 rounded-md text-lg'><NavLink to="/orders" onClick={() => setIsCartOpen(state => !state)}>Checkout</NavLink></button>
                   </>
