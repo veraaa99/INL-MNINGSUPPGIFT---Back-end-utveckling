@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { useProductContext } from "../contexts/ProductContext"
 import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
+// import { Promise } from "mongoose"
 
 const ProductsPage = () => {
 
@@ -15,6 +16,8 @@ const ProductsPage = () => {
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [img, setImg] = useState('')
+  const [imgs, setImgs] = useState('')
 
   const { getProducts, createProduct, products } = useProductContext()
   const { addProductToCart } = useShoppingCartContext()
@@ -29,19 +32,73 @@ const ProductsPage = () => {
     console.log(formData)
   }
 
+  const imagebase64 = async (files) => {
+    // const reader = new FileReader()
+    // await reader.readAsDataURL(file)
+    // console.log(
+    //   file
+    // )
+
+    // const data = new Promise((resolve, reject) => {
+    //   reader.onload = () => resolve(reader.result)
+    //   reader.onerror = (err) => reject(err)
+    // })
+
+    // return data
+
+    // TESTA NEDAN!!!
+      // Convert the FileList into an array and iterate
+      let newFiles = Array.from(files).map(file => {
+
+        // Define a new file reader
+        let reader = new FileReader();
+        reader.readAsDataURL(file)
+
+        // Create a new promise
+        return new Promise(resolve => {
+
+            // Resolve the promise after reading file
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (err) => reject(err)
+
+        });
+
+    });
+
+    // At this point you'll have an array of results
+    let res = await Promise.all(newFiles);
+    return res
+
+  }
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    let files = e.target.files    
+    
+    const images = await imagebase64(files)
+
+    setFormData(state => ({
+      ...state,
+      images: images
+    }))
+
+    console.log(images)
+  }
+
   const handleSubmit = async(e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
     
     try {
+        
         createProduct(formData)
         setFormData({
           name: '',
           price: '',
           description: '',
           category: '',
-          images: []
+          images: '',
         })
         
         if(formData.name === '' || formData.price == '' ){
@@ -94,7 +151,7 @@ const ProductsPage = () => {
                     <p className='pt-2'>Category: {product.category}</p>
                   </div>
                   <div className='grid justify-items-center py-2'>
-                  <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
+                    <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
                   </div>
                 </div>
               </div>
@@ -122,10 +179,15 @@ const ProductsPage = () => {
               <label htmlFor="category">Category: </label>
               <input className="border-1 border-solid rounded-md mb-5" type="text" name="category" id="category" value={formData.category} onChange={handleChange}/>
 
-              <label htmlFor="images">Add product images (URL:s): </label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="images" id="images" value={formData.images} onChange={handleChange}/>
+              {/* <label htmlFor="images">Add product images (URL:s): </label> */}
+              {/* <input className="border-1 border-solid rounded-md mb-5" type="text" name="images" id="images" value={formData.images} onChange={handleChange}/> */}
+
+              <label htmlFor="images">Add product images: </label>
+              <input className="border-1 border-solid rounded-md mb-5" type="file" name="images" id="images" multiple onChange={handleFileChange}/>
 
               <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Add new product</button>
+
+              {/* { img && <img src={img}/> } */}
             </div>
         </form>
 

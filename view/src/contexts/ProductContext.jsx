@@ -1,5 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import axios from "../axios_api/axios";
+// import fs from 'fs'
+// import path from "path"
+// import multer from "multer";
 
 export const ProductContext = createContext()
 
@@ -25,7 +28,19 @@ function ProductContextProvider({ children }) {
 
     const createProduct = async( data ) => {
         console.log(data)
+
         try {
+
+            // const tempPath = data.images.path
+            // console.log(tempPath)
+            // const targetPath = path.join(__dirname, "./uploads/image.png")
+            // console.log(targetPath)
+        
+            // const contents = fs.readFileSync(images, {encoding: 'base64'});
+
+            // const upload = multer({ dest: 'uploads/' })
+            // console.log(upload)
+
             const response = await axios.post('api/products', data)
 
             if(response.status === 201){

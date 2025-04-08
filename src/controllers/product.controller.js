@@ -1,5 +1,4 @@
 // Controller for handling products
-
 import mongoose from "mongoose"
 import asyncHandler from 'express-async-handler'
 
@@ -14,6 +13,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     if(!name || !price) {
         return res.status(400).json({ message: "Please enter a product name and a price" })
     }
+
     if(name == '' || name == "") {
         return res.status(400).json({ message: "Please enter a product name and a price" })
     }
