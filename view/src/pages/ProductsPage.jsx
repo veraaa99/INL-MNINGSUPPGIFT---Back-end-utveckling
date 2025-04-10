@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import { useProductContext } from "../contexts/ProductContext"
 import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 import { useUserContext } from "../contexts/UserContext"
 import axios from "../axios_api/axios"
-// import { Promise } from "mongoose"
+import { nanoid } from "nanoid";
 
 const ProductsPage = () => {
 
@@ -16,14 +16,41 @@ const ProductsPage = () => {
     images: []
   })
 
+  const [updateFormData, setUpdateFormData] = useState({
+    name: '',
+    price: '',
+    description: '',
+    category: '',
+    images: []
+  })
+
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const { getProducts, createProduct, products, setProducts } = useProductContext()
+  const [productEditor, setProductEditor] = useState(null)
+
+  const { getProducts, createProduct, updateProduct, products, setProducts } = useProductContext()
   const { addProductToCart } = useShoppingCartContext()
   const { user, token } = useUserContext()
 
   const navigate = useNavigate()
+
+  const { state } = useLocation();
+
+  const openProductEditor = (product) => {
+    setProductEditor(product);
+
+    setUpdateFormData({
+      name: product.name,
+      price: product.price,
+      description: product.description,
+      category: product.category,
+      images: '',
+    })
+
+    console.log(productEditor)
+    console.log(updateFormData)
+  }
 
   const handleChange = e => {
     setFormData(state => ({
@@ -32,6 +59,14 @@ const ProductsPage = () => {
     }))
     console.log(formData)
   }
+
+  const handleUpdateChange = e => {
+    setUpdateFormData(state => ({
+      ...state,
+      [e.target.id]: e.target.value
+    }))
+    console.log(updateFormData)
+  } 
 
   const imagebase64 = async (files) => {
       // https://stackoverflow.com/a/67296403
@@ -76,13 +111,29 @@ const ProductsPage = () => {
     console.log(images)
   }
 
+  const handleUpdateFileChange = async (e) => {
+    const file = e.target.files[0]
+    let files = e.target.files  
+    
+    console.log(files)
+    console.log(files.File)
+    
+    const images = await imagebase64(files)
+
+    setUpdateFormData(state => ({
+      ...state,
+      images: images
+    }))
+
+    console.log(images)
+  }
+
   const handleSubmit = async(e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
     
     try {
-
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
@@ -105,7 +156,7 @@ const ProductsPage = () => {
         
         setLoading(true)
         setError('')
-        navigate('/')
+        navigate('/products')
         
     } catch (err) {
         setError(err.response?.data?.message || 'Something went wrong')
@@ -119,7 +170,6 @@ const ProductsPage = () => {
   }
 
   const removeProduct = async (product) => {
-    
     try {
       const config = {
           headers: { Authorization: `Bearer ${token}` }
@@ -137,24 +187,47 @@ const ProductsPage = () => {
     } catch (err) {
       console.log(err)
     }
-
   }
 
-  const updateProduct = async () => {
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
     try {
-        const config = {
+      const config = {
           headers: { Authorization: `Bearer ${token}` }
       };
+
+      updateProduct(productEditor, updateFormData, config)
+
+      setUpdateFormData({
+        name: '',
+        price: '',
+        description: '',
+        category: '',
+        images: '',
+      })
+      setProductEditor(null)
       
-      navigate('/')
-    } catch (error) {
+      setLoading(true)
+      setError('')
+      // https://stackoverflow.com/a/75612877
+      navigate('/products', { state: nanoid() })
       
+    } catch (err) {
+        setError(err.response?.data?.message || 'Something went wrong')
+        console.log(err)
+    } 
+    finally {
+        setLoading(false)
+
     }
   }
 
   useEffect(() => {
     getProducts()
-  }, [])
+  }, [state])
 
   return (
     <div className='m-8'>
@@ -180,14 +253,49 @@ const ProductsPage = () => {
                     <p className='pt-2'>Category: {product.category}</p>
                   </div>
                   { user &&
-                  <div className='grid justify-items-center py-2'>
-                    <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
-                    <button className='block p-2 bg-orange-700 rounded-xl m-2' onClick={() => removeProduct(product)}>Remove product</button>
-                    <button onClick={() => updateProduct(product)}>Update product</button>
-                  </div>
+                    <div className='grid justify-items-center py-2'>
+                      <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
+                      <button className='block p-2 bg-orange-700 rounded-xl m-2' onClick={() => removeProduct(product)}>Remove product</button>
+                      <button className='block p-2 bg-blue-400 rounded-xl m-2' onClick={() => openProductEditor(product)}>Update product</button>
+                    </div>
                   }
+                  {
+                      productEditor == product &&
+                      <div className="flex m-auto">
+                        <form id="updateProductForm" onSubmit={handleUpdateSubmit}>
+                          <h2 className='md:text-lg sm:text-base mb-3'>Update this product: </h2>
+                          <div className='flex flex-col'>
 
+                            <label htmlFor="name">Product name: *</label>
+                            <input className="border-1 border-solid rounded-md mb-4" type="text" name="name" id="name" value={updateFormData.name} onChange={handleUpdateChange}/>
+
+                            <label htmlFor="price">Price: *</label>
+                            <input className="border-1 border-solid rounded-md mb-4" type="text" name="price" id="price" value={updateFormData.price} onChange={handleUpdateChange}/>
+
+                            <label htmlFor="description">Description: </label>
+                            <input className="border-1 border-solid rounded-md mb-4" type="text" name="description" id="description" value={updateFormData.description} onChange={handleUpdateChange}/>
+
+                            <label htmlFor="category">Category: </label>
+                            <input className="border-1 border-solid rounded-md mb-4" type="text" name="category" id="category" value={updateFormData.category} onChange={handleUpdateChange}/>
+
+                            {/* <label htmlFor="images">Add product images (URL:s): </label> */}
+                            {/* <input className="border-1 border-solid rounded-md mb-5" type="text" name="images" id="images" value={formData.images} onChange={handleChange}/> */}
+
+                            <label htmlFor="images">Add product images: </label>
+                            <input className="border-1 border-solid rounded-md mb-4" type="file" name="images" id="images" value={updateFormData.images} multiple onChange={handleUpdateFileChange}/>
+
+                            <div className="flex flex-col gap-5">
+                              <button className="p-4 px-7 bg-cyan-700 border-none rounded-md cursor-pointer" type="submit"> Update product</button>
+                              <button className=' p-4 px-7 bg-blue-400 rounded-md self-end' onClick={() => setProductEditor(null)}>Close</button>
+                            </div>
+          
+
+                          </div>
+                        </form>
+                      </div>
+                  }
                 </div>
+
               </div>
               ))
               : (
@@ -198,12 +306,7 @@ const ProductsPage = () => {
       </div>
 
       <div className='flex m-auto align-middle justify-center'>
-        <form id="productForm" 
-        onSubmit={handleSubmit} 
-        // action="/products"
-        encType="multipart/form-data"
-        // method="post"
-        >
+        <form id="productForm" onSubmit={handleSubmit}>
             <h2 className='text-2xl p-5 my-5'>Add a new product to the collection: </h2>
             <div className='flex flex-col'>
               <label htmlFor="name">Product name: *</label>
@@ -226,7 +329,6 @@ const ProductsPage = () => {
 
               <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Add new product</button>
 
-              {/* { img && <img src={img}/> } */}
             </div>
         </form>
 

@@ -1,5 +1,5 @@
 import axios from "../axios_api/axios"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { NavLink } from "react-router"
 
 import { useUserContext } from "../contexts/UserContext"
@@ -11,6 +11,7 @@ const UserProfilePage = () => {
   const { orderProducts, getShoppingCartProducts } = useShoppingCartContext()
   
   const [orders, setOrders] = useState([])
+  const [userProfile, setUserProfile] = useState(null)
 
   useEffect(() => {
     getShoppingCartProducts()
@@ -37,6 +38,29 @@ const UserProfilePage = () => {
     }
   }
 
+  useEffect(() => {
+    const getUserProfile = async () => {
+      try {
+        const res = await axios.get('api/users/profile', {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        })
+        if(res.status !== 200) return
+        setUserProfile(res.data)
+        console.log(res.data)
+  
+        console.log(user)
+        console.log(token)
+  
+      } catch (err) {
+        console.log(err.message)
+      }
+    }
+    getUserProfile()
+  }, [])
+  
+  console.log(userProfile)
   const handleLogout = () => {
     logout()
     return
@@ -46,11 +70,13 @@ const UserProfilePage = () => {
     <div className="m-auto p-10">
 
       <h1 className='text-5xl justify-self-center p-5'>USER</h1>
-      <div>
-        <h2 className='text-xl justify-self-start p-5'>Email</h2>
-        <p className='p-2 mx-4'>{user.email}</p>
-      </div>
-
+      {
+        user &&
+          <div>
+            <h2 className='text-xl justify-self-start p-5'>Email</h2>
+            <p className='p-2 mx-4'>{user.email}</p>
+          </div>
+      }
       <div>
 
         <h3 className='text-xl justify-self-start p-5'>Shopping cart: </h3>
@@ -87,7 +113,7 @@ const UserProfilePage = () => {
                           return (
                             product.productId == null
                             ? 
-                              <ul className="mx-5 w-full h-full mb-5" key={crypto.randomUUID}>
+                              <ul className="mx-5 w-full h-full mb-5" key={Math.random()}>
                                   <li className='py-1'>Product: Product is no longer avaliable</li>
                                   <li className='py-1'>Price: Unknown</li>
                               </ul>

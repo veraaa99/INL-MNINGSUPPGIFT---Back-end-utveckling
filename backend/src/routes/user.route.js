@@ -1,7 +1,7 @@
 // User router
 
 import express from 'express'
-import { getUserById, getUserByToken, getUsers, loginUser, registerUser } from '../controllers/user.controller.js'
+import { checkToken, getProfile, getUserById, getUserByToken, getUsers, loginUser, registerUser } from '../controllers/user.controller.js'
 import { verifyToken } from '../middleware/verify.middleware.js'
 
 // Create router
@@ -18,6 +18,7 @@ router.post('/login', loginUser)
 // Get one user
 router.get('/', verifyToken, getUsers)
 router.get('/profile', verifyToken, getUserByToken)
+router.get('/check', verifyToken, checkToken)
 router.get('/:id', verifyToken, getUserById)
 
 export default router

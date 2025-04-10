@@ -13,23 +13,40 @@ function ProductContextProvider({ children }) {
             if(res.status !== 200) return
       
             setProducts(res.data)
-            console.log(products)
             return
 
           }
           catch(error) {
             console.log(error.message)
             return
-
           }
     }
 
     const createProduct = async( data, config ) => {
-        console.log(data)
-        console.log(config)
-
         try {
             const response = await axios.post('api/products', data, config)
+
+            if(response.status === 201){
+                
+                setProducts({
+                    name: response.name,
+                    price: response.price,
+                    description: response.description,
+                    category: response.category,
+                    images: response.images
+                })
+            }
+            
+            return
+        } catch (error) {
+            console.error(error.message)
+            return
+        }
+    }
+
+    const updateProduct = async( product, data, config ) => {
+        try {
+            const response = await axios.put(`api/products/${product._id}`, data, config)
 
             if(response.status === 201){
                 
@@ -53,7 +70,8 @@ function ProductContextProvider({ children }) {
         createProduct,
         getProducts,
         products, 
-        setProducts
+        setProducts,
+        updateProduct
     }
 
     return (

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import axios from "../axios_api/axios"
 
 export const UserContext = createContext()
@@ -7,8 +7,40 @@ const UserContextProvider = ({ children }) => {
 
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
-  // const [userReady, setUserReady] = useState(false)
+//   const [userReady, setUserReady] = useState(false)
   const [rememberUser, setRememberUser] = useState(false)
+
+  useEffect(() => {
+    const checkToken = async() => {
+      try {
+          if(!localStorage.getItem('rememberUser')) return
+          setRememberUser(localStorage.getItem('rememberUser') === 'true')
+
+          const token = sessionStorage.getItem('jwt')
+          if(!token) return
+
+          const res = await axios.get('api/users/check', {
+              headers: {
+                  authorization: `Bearer ${sessionStorage.getItem('jwt') || ''}`
+              }
+          })
+
+          if(res.status === 200) {
+              setToken(sessionStorage.getItem('jwt'))
+              setUser(res.data)
+            //   connectSocket(res.data.name)
+          }
+
+      } catch (error) {
+          console.log(error.message)
+          sessionStorage.removeItem('jwt')
+      }
+    //   finally {
+    //       setAuthReady(true)
+    //   }
+    }
+    checkToken()
+  }, [])
 
   const register = async (userInformation) => {
       const res = await axios.post('api/users/register', userInformation)
@@ -20,7 +52,6 @@ const UserContextProvider = ({ children }) => {
           _id: res.data._id,
           email: res.data.email,
         })
-
         
         if(rememberUser) {
             sessionStorage.setItem('jwt', res.data.userToken)
@@ -70,7 +101,6 @@ const UserContextProvider = ({ children }) => {
       logout,
       rememberUser,
       toggleRememberUser,
-      // authReady
   }
 
   return (

@@ -90,7 +90,7 @@ export const getUsers = asyncHandler(async (req, res) => {
 
 // Get one user (GET request)
 export const getUserById = asyncHandler(async (req, res) => {
-    // Get the id of the product from the request parameter
+    // Get the id of the user from the request parameter
     const { id } = req.params
 
     // Find the user in the database with a matching id (excluding the password)
@@ -102,6 +102,15 @@ export const getUserById = asyncHandler(async (req, res) => {
     }
 
     // Return a status 200 and the user
+    res.status(200).json(user)
+})
+
+export const getProfile = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id, "-password").exec()
+    if(!user) {
+        return res.status(404).json({ message: 'User not found' })
+    }
+
     res.status(200).json(user)
 })
 
@@ -122,4 +131,11 @@ export const getUserByToken = asyncHandler(async (req, res) => {
 
     // Return a status 200 and the user
     res.status(200).json(user)
+})
+
+export const checkToken = asyncHandler(async (req, res) => {
+    res.status(200).json({
+        _id: req.user._id,
+        name: req.user.email
+    })
 })
