@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { useProductContext } from "../contexts/ProductContext"
 import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
+import { useUserContext } from "../contexts/UserContext"
+import axios from "../axios_api/axios"
 // import { Promise } from "mongoose"
 
 const ProductsPage = () => {
@@ -16,11 +18,10 @@ const ProductsPage = () => {
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [img, setImg] = useState('')
-  const [imgs, setImgs] = useState('')
 
-  const { getProducts, createProduct, products } = useProductContext()
+  const { getProducts, createProduct, products, setProducts } = useProductContext()
   const { addProductToCart } = useShoppingCartContext()
+  const { user, token } = useUserContext()
 
   const navigate = useNavigate()
 
@@ -33,20 +34,7 @@ const ProductsPage = () => {
   }
 
   const imagebase64 = async (files) => {
-    // const reader = new FileReader()
-    // await reader.readAsDataURL(file)
-    // console.log(
-    //   file
-    // )
-
-    // const data = new Promise((resolve, reject) => {
-    //   reader.onload = () => resolve(reader.result)
-    //   reader.onerror = (err) => reject(err)
-    // })
-
-    // return data
-
-    // TESTA NEDAN!!!
+      // https://stackoverflow.com/a/67296403
       // Convert the FileList into an array and iterate
       let newFiles = Array.from(files).map(file => {
 
@@ -68,12 +56,15 @@ const ProductsPage = () => {
     // At this point you'll have an array of results
     let res = await Promise.all(newFiles);
     return res
-
   }
 
+  // https://www.youtube.com/watch?v=yZjpK5QijlU&t=2776s
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
-    let files = e.target.files    
+    let files = e.target.files  
+    
+    console.log(files)
+    console.log(files.File)
     
     const images = await imagebase64(files)
 
@@ -91,8 +82,12 @@ const ProductsPage = () => {
     setError('')
     
     try {
-        
-        createProduct(formData)
+
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        createProduct(formData, config)
         setFormData({
           name: '',
           price: '',
@@ -123,6 +118,40 @@ const ProductsPage = () => {
     }
   }
 
+  const removeProduct = async (product) => {
+    
+    try {
+      const config = {
+          headers: { Authorization: `Bearer ${token}` }
+      };
+
+      let res = await axios.delete(`/api/products/${product._id}`, config)
+      if(res.status !== 204) return
+
+      const updatedProducts = products.filter((item) => item._id !== product._id)
+      console.log(updatedProducts)
+      setProducts(updatedProducts)
+
+      navigate('/')
+      return
+    } catch (err) {
+      console.log(err)
+    }
+
+  }
+
+  const updateProduct = async () => {
+    try {
+        const config = {
+          headers: { Authorization: `Bearer ${token}` }
+      };
+      
+      navigate('/')
+    } catch (error) {
+      
+    }
+  }
+
   useEffect(() => {
     getProducts()
   }, [])
@@ -150,9 +179,14 @@ const ProductsPage = () => {
                     <p className='pt-2'>Price: {product.price} kr</p>
                     <p className='pt-2'>Category: {product.category}</p>
                   </div>
+                  { user &&
                   <div className='grid justify-items-center py-2'>
                     <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button" onClick={() => addProductToCart(product)}>Add to cart</button>
+                    <button className='block p-2 bg-orange-700 rounded-xl m-2' onClick={() => removeProduct(product)}>Remove product</button>
+                    <button onClick={() => updateProduct(product)}>Update product</button>
                   </div>
+                  }
+
                 </div>
               </div>
               ))
@@ -164,7 +198,12 @@ const ProductsPage = () => {
       </div>
 
       <div className='flex m-auto align-middle justify-center'>
-        <form id="productForm" onSubmit={handleSubmit}>
+        <form id="productForm" 
+        onSubmit={handleSubmit} 
+        // action="/products"
+        encType="multipart/form-data"
+        // method="post"
+        >
             <h2 className='text-2xl p-5 my-5'>Add a new product to the collection: </h2>
             <div className='flex flex-col'>
               <label htmlFor="name">Product name: *</label>

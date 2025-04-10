@@ -39,6 +39,9 @@ function ShoppingCartContextProvider({ children }) {
                }))
          }
 
+         console.log(product)
+         console.log(orderProducts)
+
       } catch (err) {
          console.error(err.message)
       }

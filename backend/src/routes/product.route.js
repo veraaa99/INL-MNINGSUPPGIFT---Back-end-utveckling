@@ -10,7 +10,7 @@ const router = express.Router()
 // (POST request):
 // Create new product
 router.post('/', 
-    // verifyToken, 
+    verifyToken, 
     createProduct) // CREATE
 
 // (GET request):

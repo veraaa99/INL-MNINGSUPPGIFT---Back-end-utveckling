@@ -52,7 +52,7 @@ const CheckoutPage = () => {
           <div className='flex flex-col p-5 text-sm border-1 rounded-2xl mb-5'>
             {
               orderProducts.map((orderProduct) => (
-                <div>
+                // <div>
                   <ul className="mx-5" key={orderProduct.product._id}>
                     <div className="w-full h-full mb-5">
                       <div className="w-xs h-xs">
@@ -68,7 +68,7 @@ const CheckoutPage = () => {
                       </div>
                     </div>
                   </ul>
-                </div>
+                // </div>
               ))
             }
 

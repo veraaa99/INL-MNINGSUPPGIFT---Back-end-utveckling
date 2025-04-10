@@ -82,7 +82,6 @@
 // Express application 
 
 import express from 'express'
-// import path from 'path'
 
 import productRoutes from './routes/product.route.js'
 import messageRoutes from './routes/message.route.js'
@@ -94,23 +93,17 @@ import { errorHandler, notFound } from './middleware/error.middleware.mjs'
 import cors from 'cors'
 
 // Create new Express application
-// Create an absolute path (to find the view-folder)
 const app = express()
-// const __dirname = path.resolve();
 
 app.use(cors())
 // Parse URL-encoded data with querystring library
-app.use(express.json({ limit: '16mb', extended: false }));
-// app.use(express.bodyParser({ limit: '50mb' }));
+app.use(express.json({ limit: '16MB', extended: false }));
 
 // Use product router, message router, user router and order router
 app.use('/api/products', productRoutes)
 app.use('/api/messages', messageRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
-
-// Create the final path to the view folder
-// app.use(express.static(path.join(__dirname, './view')));
 
 // Use NotFound and ErrorHandler middleware
 app.use(notFound)

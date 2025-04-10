@@ -8,7 +8,6 @@ const RootLayout = () => {
       <div>
         <Outlet />
       </div>
-      <footer>Hej</footer>
     </div>
   )
 }

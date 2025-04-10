@@ -17,29 +17,30 @@ const UserContextProvider = ({ children }) => {
       
       setToken(res.data.userToken)
       setUser({
-         _id: res.data._id,
-         email: res.data.email,
-      })
+          _id: res.data._id,
+          email: res.data.email,
+        })
 
-      if(rememberUser) {
-          sessionStorage.setItem('jwt', res.data.userToken)
-      }
-  }
-
-  const login = async (userInformation) => {
-      const res = await axios.post('api/users/login', userInformation)
-
-      if(!res.status === 200) return
-      
-      setToken(res.data.userToken)
-      setUser({
-         _id: res.data._id,
-         email: res.data.email,
-      })
-      
-      if(rememberUser) {
-          sessionStorage.setItem('jwt', res.data.userToken)
-      }
+        
+        if(rememberUser) {
+            sessionStorage.setItem('jwt', res.data.userToken)
+        }
+    }
+    
+    const login = async (userInformation) => {
+        const res = await axios.post('api/users/login', userInformation)
+        
+        if(!res.status === 200) return
+                
+        setToken(res.data.userToken)
+        setUser({
+            _id: res.data._id,
+            email: res.data.email,
+        })
+        
+        if(rememberUser) {
+            sessionStorage.setItem('jwt', res.data.userToken)
+        }
   }
   
   const logout = () => {

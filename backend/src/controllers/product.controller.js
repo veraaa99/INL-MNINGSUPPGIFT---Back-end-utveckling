@@ -32,7 +32,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     }
 
     // Create and save a new product on the database
-    const product = await Product.create({ name, price, description, category, images })
+    const product = await Product.create({ name, price, description, category, images})
     // Return a status 201 and the created product
     res.status(201).json(product)
 })

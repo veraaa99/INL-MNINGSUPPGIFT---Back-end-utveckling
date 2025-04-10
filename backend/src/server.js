@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import app from './app.js'
 
 // Use the port stored in the PORT environment variable. If the port is already in use, use port 9999 instead
-const PORT = process.env.PORT || 9999
+const PORT =  process.env.PORT || 9999
 // Use a connection string (stored in the MONGO_URI environment variable) to connect to MongoDB
 const MONGO_URI = process.env.MONGO_URI
 

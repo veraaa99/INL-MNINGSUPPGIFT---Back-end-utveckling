@@ -1,5 +1,4 @@
 // Controller for handling users
-
 import asyncHandler from 'express-async-handler'
 import bcrypt from "bcryptjs";
 import { generateToken } from "../token/generateWebToken.js";
@@ -39,7 +38,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     // Generate a new token for the user (to use for authorization)
     const userToken = generateToken(user)
     // Return a status 201 and the created user
-    res.status(201).json({message: "User succesfully registered: " + user.email, userToken})
+    res.status(201).json({_id: user._id, email: user.email, userToken: userToken})
 })
 
 // Login a user (POST request)
@@ -71,7 +70,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     // Generate a new token for the user (to use for authorization)
     const userToken = generateToken(user)
     // Return a status 200 and the user
-    res.status(200).json({message: "User succesfully logged in: " + user.email, userToken})
+    res.status(200).json({_id: user._id, email: user.email, userToken: userToken})
 
 })
 

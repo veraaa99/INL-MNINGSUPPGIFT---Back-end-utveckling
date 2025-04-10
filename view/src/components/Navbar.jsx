@@ -13,6 +13,7 @@ const Navbar = () => {
 
   useEffect(() => {
     getShoppingCartProducts()
+    console.log(user)
   }, [orderProducts])
   
   return (
