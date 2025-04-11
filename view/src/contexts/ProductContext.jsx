@@ -8,7 +8,8 @@ export const ProductContext = createContext()
 function ProductContextProvider({ children }) {
 
     const [products, setProducts] = useState([])
-    const [productEditor, setProductEditor] = useState(null)
+    const [productEditor, setProductEditor] = useState(null) 
+    const [updateError, setUpdateError] = useState('')
 
     const [updateFormData, setUpdateFormData] = useState({
         name: '',
@@ -35,6 +36,7 @@ function ProductContextProvider({ children }) {
     const createProduct = async( data ) => {
         try {
             const response = await axios.post('api/products', data)
+            setUpdateError('')
 
             if(response.status === 201){
                 
@@ -59,7 +61,6 @@ function ProductContextProvider({ children }) {
           ...state,
           [e.target.id]: e.target.value
         }))
-        console.log(updateFormData)
     }
 
     const handleUpdateFileChange = async (e) => {
@@ -88,12 +89,13 @@ function ProductContextProvider({ children }) {
             })
         })
 
-    let res = await Promise.all(newFiles)
-    return res
+        let res = await Promise.all(newFiles)
+        return res
     }
 
     const handleUpdateSubmit = async (e) => {
         e.preventDefault()
+        setUpdateError('')
     
         try {
     
@@ -109,6 +111,7 @@ function ProductContextProvider({ children }) {
           setProductEditor(null)
           
         } catch (err) {
+            setUpdateError(err)
             console.log(err.response?.data?.message || 'Something went wrong')
         } 
     }
@@ -116,6 +119,7 @@ function ProductContextProvider({ children }) {
     const updateProduct = async( product, data ) => {
         try {
             const response = await axios.put(`api/products/${product._id}`, data)
+            setUpdateError('')
 
             if(response.status === 201){
                 setProducts({
@@ -128,8 +132,9 @@ function ProductContextProvider({ children }) {
             }
             
             return
-        } catch (error) {
-            console.error(error.message)
+        } catch (err) {
+            setUpdateError(err)
+            console.error(err.message)
             return
         }
     }
@@ -141,8 +146,10 @@ function ProductContextProvider({ children }) {
     
           const updatedProducts = products.filter((item) => item._id !== product._id)
           setProducts(updatedProducts)
+          setUpdateError('')
         
         } catch (err) {
+          setUpdateError(err)
           console.log(err)
         }
     }
@@ -152,10 +159,11 @@ function ProductContextProvider({ children }) {
         getProducts,
         products, 
         setProducts,
+        updateError,
+        setUpdateError,
         updateProduct,
         productEditor,
         setProductEditor,
-        // openProductEditor,
         handleUpdateChange,
         handleUpdateFileChange,
         handleUpdateSubmit,

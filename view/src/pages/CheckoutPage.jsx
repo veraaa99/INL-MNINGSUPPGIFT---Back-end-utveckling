@@ -1,5 +1,6 @@
 // Checkout page
 
+import { useState } from "react"
 import axios from "../axios_api/axios"
 import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 import { useUserContext } from "../contexts/UserContext"
@@ -8,6 +9,8 @@ const CheckoutPage = () => {
 
     const { orderProducts, getTotalSum, addProductToCart, removeOneQuantityFromCart, removeProductFromCart } = useShoppingCartContext()
     const { token } = useUserContext()
+
+    const [message, setMessage] = useState('')
 
     const placeOrder = async() => {
       const order = []
@@ -24,10 +27,11 @@ const CheckoutPage = () => {
         })
 
         if(res.status === 201){
-          console.log('Order succesfully placed!')
+          setMessage('Order succesfully placed!')
         }
 
       } catch (error) {
+        setMessage(error.response?.data?.message || 'Something went wrong')
         console.log(error)
       }
     }
@@ -64,6 +68,7 @@ const CheckoutPage = () => {
               <p className="text-lg">Total price: {getTotalSum()} kr</p>
               <div className="pt-20">
                 <button className="cursor-pointer hover:bg-indigo-400 hover:text-white m-3 p-3 border-3 border-solid border-slate-400 rounded-md text-lg" onClick={() => placeOrder()}>Place Order</button>
+                <p className="text-center text-lg mt-5">{message}</p>
               </div>
             </div>
 

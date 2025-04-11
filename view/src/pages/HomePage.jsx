@@ -11,7 +11,7 @@ import { useUserContext } from "../contexts/UserContext"
 const HomePage = () => {
 
   const { getProducts, updateFormData, setUpdateFormData, products, productEditor, setProductEditor,
-    handleUpdateChange, handleUpdateFileChange, handleUpdateSubmit, removeProduct } = useProductContext()
+    handleUpdateChange, handleUpdateFileChange, handleUpdateSubmit, removeProduct, updateError } = useProductContext()
   const { addProductToCart } = useShoppingCartContext()
   const { user } = useUserContext()
 
@@ -85,7 +85,7 @@ const HomePage = () => {
                             <input className="border-1 border-solid rounded-md mb-4" type="text" name="name" id="name" value={updateFormData.name} onChange={handleUpdateChange}/>
 
                             <label htmlFor="price">Price: *</label>
-                            <input className="border-1 border-solid rounded-md mb-4" type="text" name="price" id="price" value={updateFormData.price} onChange={handleUpdateChange}/>
+                            <input className="border-1 border-solid rounded-md mb-4" type="number" name="price" id="price" value={updateFormData.price} onChange={handleUpdateChange}/>
 
                             <label htmlFor="description">Description: </label>
                             <input className="border-1 border-solid rounded-md mb-4" type="text" name="description" id="description" value={updateFormData.description} onChange={handleUpdateChange}/>
@@ -100,6 +100,8 @@ const HomePage = () => {
                               <button className="p-4 px-7 bg-cyan-700 border-none rounded-md cursor-pointer" type="submit"> Update product</button>
                               <button className='p-4 px-7 bg-blue-400 rounded-md self-end cursor-pointer' type="button" onClick={() => setProductEditor(null)}>Close</button>
                             </div>
+
+                            <p className="text-red-500 text-center text-lg mt-5">{updateError}</p>
           
                           </div>
                         </form>

@@ -12,6 +12,7 @@ const MessagePage = () => {
   })
 
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
 
   const handleChange = e => {
     setFormData(state => ({
@@ -26,11 +27,9 @@ const MessagePage = () => {
 
     if(formData.name === '' || formData.email == ''  || formData.message == '') {
         setError('Please fill in all fields')
-        console.log(error)
+        setMessage('')
         return
     } 
-
-    setError('')
 
     try {
       const response = await axios.post('api/messages', formData)
@@ -42,11 +41,14 @@ const MessagePage = () => {
          email: '',
          message: ''
       })
+      setError('')
+      setMessage('Message succesfully submitted!')
 
       return
                     
     } catch (error) {
         setError(error.response?.data?.message || 'Something went wrong')
+        setMessage('')
         console.log(error)
     } 
   }
@@ -68,6 +70,8 @@ const MessagePage = () => {
               <label htmlFor="message">Message: *</label>
               <textarea className="border-1 border-solid rounded-md mb-5" name="message" id="message" value={formData.message} onChange={handleChange}/>
 
+              <p className="text-red-500 text-center text-lg mt-5">{error}</p>
+              <p className="text-center text-lg mt-5">{message}</p>
               <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Send</button>
             </div>
         </form>

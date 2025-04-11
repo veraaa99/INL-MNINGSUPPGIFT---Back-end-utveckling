@@ -19,9 +19,10 @@ export const registerUser = asyncHandler(async (req, res) => {
     if(repeatedPassword !== password) {
         return res.status(400).json({ message: 'Password and repeated password do not match'})
     }
-
-    // Find the user in the database with a matching email address
-    const existingUser = await User.findOne({ email }).exec()
+    
+    // Trim the email address and find the user in the database with a matching email address
+    const trimmedEmail = email.toLowerCase().trim().replace(/\s/g, "")
+    const existingUser = await User.findOne({ email: trimmedEmail })
 
     // If a user with a matching email address already exists, return an error message
     if(existingUser) {
@@ -33,12 +34,12 @@ export const registerUser = asyncHandler(async (req, res) => {
     const newHashedPassword = await bcrypt.hash(password, salt)
 
     // Create and save a new user on the database
-    const user = await User.create({ email, password: newHashedPassword })
+    const user = await User.create({ email: email, password: newHashedPassword })
 
     // Generate a new token for the user (to use for authorization)
     const userToken = generateToken(user)
     // Return a status 201 and the created user
-    res.status(201).json({_id: user._id, email: user.email, userToken: userToken})
+    res.status(201).json({_id: user._id, email: trimmedEmail, userToken: userToken})
 })
 
 // Login a user (POST request)
@@ -51,8 +52,9 @@ export const loginUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Please enter an email address and a password to login' })
     }
 
-    // Find the user in the database with a matching email address
-    const user = await User.findOne({ email }).exec()
+    // Trim the email address and find the user in the database with a matching email address
+    const trimmedEmail = email.toLowerCase().trim().replace(/\s/g, "")
+    const user = await User.findOne({ email: trimmedEmail }).exec()
 
     // If no user with a matching email address could be found, return an error message
     if(!user) {

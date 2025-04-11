@@ -98,6 +98,7 @@ const UserProfilePage = () => {
                               <div className="w-full h-full mb-5">
                                 <li className='py-1'> Product: {product.productId.name}</li>
                                 <li className='py-1'>Price: {product.productId.price} kr</li>
+                                <li className='py-1'>Quantity: x {product.quantity}</li>
                               </div>
                             </ul>
                           )

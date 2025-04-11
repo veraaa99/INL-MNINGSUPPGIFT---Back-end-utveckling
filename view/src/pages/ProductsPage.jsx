@@ -21,7 +21,7 @@ const ProductsPage = () => {
   const [error, setError] = useState('')
 
   const { getProducts, createProduct, updateFormData, setUpdateFormData, products, productEditor, setProductEditor,
-    handleUpdateChange, handleUpdateFileChange, handleUpdateSubmit, removeProduct } = useProductContext()
+    handleUpdateChange, handleUpdateFileChange, handleUpdateSubmit, removeProduct, updateError, setUpdateError } = useProductContext()
   const { addProductToCart } = useShoppingCartContext()
   const { user } = useUserContext()
 
@@ -54,10 +54,15 @@ const ProductsPage = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault()
-    setError('')
     
-    try {
+    try {      
+      if(formData.name === '' || formData.price == '' ){
+        setError('Please fill in name and price')
+        return
+      } 
+      
       createProduct(formData)
+
       setFormData({
         name: '',
         price: '',
@@ -65,15 +70,13 @@ const ProductsPage = () => {
         category: '',
         images: '',
       })
-        
-      if(formData.name === '' || formData.price == '' ){
-        setError('Please fill in name and price')
-        return
-      } 
       
       setError('')
+      setUpdateError('')
+
       // Navigate and rerender components tips: https://stackoverflow.com/a/75612877
-      navigate('/products', { state: nanoid() })        
+      navigate('/products' , { state: nanoid() }) 
+             
     } catch (err) {
         setError(err.response?.data?.message || 'Something went wrong')
         console.log(err)
@@ -143,7 +146,7 @@ const ProductsPage = () => {
                             <input className="border-1 border-solid rounded-md mb-4" type="text" name="name" id="name" value={updateFormData.name} onChange={handleUpdateChange}/>
 
                             <label htmlFor="price">Price: *</label>
-                            <input className="border-1 border-solid rounded-md mb-4" type="text" name="price" id="price" value={updateFormData.price} onChange={handleUpdateChange}/>
+                            <input className="border-1 border-solid rounded-md mb-4" type="number" name="price" id="price" value={updateFormData.price} onChange={handleUpdateChange}/>
 
                             <label htmlFor="description">Description: </label>
                             <input className="border-1 border-solid rounded-md mb-4" type="text" name="description" id="description" value={updateFormData.description} onChange={handleUpdateChange}/>
@@ -153,12 +156,14 @@ const ProductsPage = () => {
 
                             <label htmlFor="images">Add product images: </label>
                             <input className="border-1 border-solid rounded-md mb-4" type="file" name="images" id="images" value={updateFormData.images} multiple onChange={handleUpdateFileChange}/>
+                            
+                            <p className="text-red-500 text-center text-lg mt-5">{updateError}</p>
 
                             <div className="flex flex-col gap-5">
                               <button className="p-4 px-7 bg-cyan-700 border-none rounded-md cursor-pointer" type="submit"> Update product</button>
                               <button className='p-4 px-7 bg-blue-400 rounded-md self-end cursor-pointer' type="button" onClick={() => setProductEditor(null)}>Close</button>
                             </div>
-          
+
                           </div>
                         </form>
                       </div>
@@ -182,7 +187,7 @@ const ProductsPage = () => {
               <input className="border-1 border-solid rounded-md mb-5" type="text" name="name" id="name" value={formData.name} onChange={handleChange}/>
 
               <label htmlFor="price">Price: *</label>
-              <input className="border-1 border-solid rounded-md mb-5" type="text" name="price" id="price" value={formData.price} onChange={handleChange}/>
+              <input className="border-1 border-solid rounded-md mb-5" type="number" name="price" id="price" value={formData.price} onChange={handleChange}/>
 
               <label htmlFor="description">Description: </label>
               <input className="border-1 border-solid rounded-md mb-5" type="text" name="description" id="description" value={formData.description} onChange={handleChange}/>
@@ -192,9 +197,10 @@ const ProductsPage = () => {
 
               <label htmlFor="images">Add product images: </label>
               <input className="border-1 border-solid rounded-md mb-5" type="file" name="images" id="images" multiple onChange={handleFileChange}/>
+              
+              <p className="text-red-500 text-center text-lg mt-5">{error}</p>
 
               <button className="p-4 m-4 bg-cyan-700 border-none rounded-md cursor-pointer">Add new product</button>
-
             </div>
         </form>
 
