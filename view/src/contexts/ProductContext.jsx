@@ -1,3 +1,5 @@
+// Product context
+
 import { createContext, useContext, useState } from "react";
 import axios from "../axios_api/axios";
 
@@ -6,25 +8,33 @@ export const ProductContext = createContext()
 function ProductContextProvider({ children }) {
 
     const [products, setProducts] = useState([])
+    const [productEditor, setProductEditor] = useState(null)
+
+    const [updateFormData, setUpdateFormData] = useState({
+        name: '',
+        price: '',
+        description: '',
+        category: '',
+        images: []
+      })
 
     const getProducts = async() => {
-          try {
+        try {
             let res = await axios.get('/api/products')
             if(res.status !== 200) return
-      
+        
             setProducts(res.data)
             return
-
-          }
-          catch(error) {
+        }
+        catch(error) {
             console.log(error.message)
             return
-          }
+        }
     }
 
-    const createProduct = async( data, config ) => {
+    const createProduct = async( data ) => {
         try {
-            const response = await axios.post('api/products', data, config)
+            const response = await axios.post('api/products', data)
 
             if(response.status === 201){
                 
@@ -44,12 +54,70 @@ function ProductContextProvider({ children }) {
         }
     }
 
-    const updateProduct = async( product, data, config ) => {
+    const handleUpdateChange = e => {
+        setUpdateFormData(state => ({
+          ...state,
+          [e.target.id]: e.target.value
+        }))
+        console.log(updateFormData)
+    }
+
+    const handleUpdateFileChange = async (e) => {
+        let files = e.target.files  
+        
+        const images = await imagebase64(files)
+    
+        setUpdateFormData(state => ({
+          ...state,
+          images: images
+        }))
+    
+      }
+
+    const imagebase64 = async (files) => {
+        // Turn several files into Base64 format: https://stackoverflow.com/a/67296403
+        let newFiles = Array.from(files).map(file => {
+
+            let reader = new FileReader()
+            reader.readAsDataURL(file)
+
+            return new Promise(resolve => {
+                reader.onload = () => resolve(reader.result)
+                reader.onerror = (err) => reject(err)
+
+            })
+        })
+
+    let res = await Promise.all(newFiles)
+    return res
+    }
+
+    const handleUpdateSubmit = async (e) => {
+        e.preventDefault()
+    
         try {
-            const response = await axios.put(`api/products/${product._id}`, data, config)
+    
+          updateProduct(productEditor, updateFormData)
+          setUpdateFormData({
+            name: '',
+            price: '',
+            description: '',
+            category: '',
+            images: '',
+          })
+    
+          setProductEditor(null)
+          
+        } catch (err) {
+            console.log(err.response?.data?.message || 'Something went wrong')
+        } 
+    }
+
+    const updateProduct = async( product, data ) => {
+        try {
+            const response = await axios.put(`api/products/${product._id}`, data)
 
             if(response.status === 201){
-                
                 setProducts({
                     name: response.name,
                     price: response.price,
@@ -63,6 +131,19 @@ function ProductContextProvider({ children }) {
         } catch (error) {
             console.error(error.message)
             return
+        }
+    }
+
+    const removeProduct = async (product) => {
+        try {
+          let res = await axios.delete(`/api/products/${product._id}`)
+          if(res.status !== 204) return
+    
+          const updatedProducts = products.filter((item) => item._id !== product._id)
+          setProducts(updatedProducts)
+        
+        } catch (err) {
+          console.log(err)
         }
     }
 
@@ -71,7 +152,16 @@ function ProductContextProvider({ children }) {
         getProducts,
         products, 
         setProducts,
-        updateProduct
+        updateProduct,
+        productEditor,
+        setProductEditor,
+        // openProductEditor,
+        handleUpdateChange,
+        handleUpdateFileChange,
+        handleUpdateSubmit,
+        removeProduct,
+        updateFormData,
+        setUpdateFormData
     }
 
     return (
@@ -79,7 +169,6 @@ function ProductContextProvider({ children }) {
             { children }
         </ProductContext.Provider>
     )
-
 }
 
 export default ProductContextProvider

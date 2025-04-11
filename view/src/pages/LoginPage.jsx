@@ -1,6 +1,7 @@
+// Login user page
+
 import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router"
-import { RiLoaderFill } from "react-icons/ri"
 import { useUserContext } from "../contexts/UserContext"
 
 function LoginPage() {
@@ -9,11 +10,10 @@ function LoginPage() {
         email: '',
         password: ''
     })
-
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    const { login, rememberUser, toggleRememberUser, user} = useUserContext()
+    const { login, rememberUser, toggleRememberUser } = useUserContext()
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -26,11 +26,10 @@ function LoginPage() {
 
         setLoading(true)
         setError('')
+
         try {
             await login(userInformation)
-            navigate('/')
-            return
-            
+            navigate(location.state?.from || '/')
         } catch (error) {
             setError(error.response?.data?.message || 'Something went wrong')
             return
@@ -57,11 +56,11 @@ function LoginPage() {
                 <input type="checkbox" name="persist" id="persist" checked={rememberUser} onChange={toggleRememberUser}/>
                 <label className="text-2xl" htmlFor="persist">Remember me</label>
             </div>
-            <button className="text-2xl" disabled={loading}>{loading ? <span><RiLoaderFill /></span> : 'Login'}</button>
+            <button className="text-2xl cursor-pointer" disabled={loading}> { loading ? <p>Logging in, please wait...</p> : 'Login' }</button>
 
         </form>
         <p className="text-red-500 text-center text-lg mt-5">{error}</p>
-        <p className="text-center text-lg mt-5">Don't have an account? <Link className="underline" to="/register">Register</Link></p>
+        <p className="text-center text-lg mt-5">No account? <Link className="underline cursor-pointer" to="/register">Register</Link></p>
     </div>
 
   )

@@ -1,3 +1,5 @@
+// User layout (when user is logged in)
+
 import { Navigate, Outlet, useLocation } from "react-router"
 import { useUserContext } from "../contexts/UserContext"
 

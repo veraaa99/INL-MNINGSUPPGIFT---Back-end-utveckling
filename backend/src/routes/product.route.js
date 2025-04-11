@@ -9,9 +9,7 @@ const router = express.Router()
 
 // (POST request):
 // Create new product
-router.post('/', 
-    verifyToken, 
-    createProduct) // CREATE
+router.post('/', createProduct) // CREATE
 
 // (GET request):
 // Get all products
@@ -21,11 +19,11 @@ router.get('/:id', getProduct) // READ
 
 // (PUT or PATCH request):
 // Update a product
-router.put('/:id', verifyToken, updateProduct) // UPDATE
-router.patch('/:id', verifyToken, updateProduct) // UPDATE
+router.put('/:id', updateProduct) // UPDATE
+router.patch('/:id', updateProduct) // UPDATE
 
 // (DELETE request):
 // Delete a product
-router.delete('/:id', verifyToken, deleteProduct) // DELETE
+router.delete('/:id', deleteProduct) // DELETE
 
 export default router

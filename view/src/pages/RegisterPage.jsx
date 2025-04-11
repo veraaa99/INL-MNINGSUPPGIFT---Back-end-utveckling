@@ -1,6 +1,7 @@
+// Register user page
+
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
-import { RiLoaderFill } from "react-icons/ri"
 import { useUserContext } from "../contexts/UserContext"
 
 function RegisterPage() {
@@ -34,8 +35,8 @@ function RegisterPage() {
           await register(userInformation)
           navigate('/')
           
-      } catch (error) {
-          setError(error.response?.data?.message || 'Something went wrong')
+      } catch (err) {
+          setError(err.response?.data?.message || 'Something went wrong')
       } finally {
           setLoading(false)
       }
@@ -61,10 +62,10 @@ function RegisterPage() {
                 <input type="checkbox" name="persist" id="persist" checked={rememberUser} onChange={toggleRememberUser}/>
                 <label className="text-2xl" htmlFor="persist">Remember me</label>
             </div>
-            <button className="text-2xl" disabled={loading}>{loading ? <span><RiLoaderFill /></span> : 'Register'}</button>
+            <button className="text-2xl" disabled={loading}>{loading ? <p>Creating new user, please wait...</p> : 'Register'}</button>
         </form>
         <p className="text-red-500 text-center text-lg mt-5">{error}</p>
-        <p className="text-center text-lg mt-5">Already have an account? <Link className="underline" to="/login">Login</Link></p>
+        <p className="text-center text-lg mt-5">Already have an account? <Link className="underline cursor-pointer" to="/login">Login</Link></p>
     </div>
   )
 }

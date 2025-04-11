@@ -1,19 +1,17 @@
+// Navbar component
+
 import { NavLink } from "react-router"
 import { useUserContext } from "../contexts/UserContext"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 
 const Navbar = () => {
 
   const { user } = useUserContext()
-  const [isCartOpen, setIsCartOpen] = useState(false)
-
-  const { getShoppingCartProducts, orderProducts, addProductToCart,
+  const { orderProducts, addProductToCart,
     removeOneQuantityFromCart, removeProductFromCart, getTotalSum } = useShoppingCartContext()
 
-  useEffect(() => {
-    getShoppingCartProducts()
-  }, [orderProducts])
+  const [isCartOpen, setIsCartOpen] = useState(false)
   
   return (
     <div>
@@ -29,6 +27,7 @@ const Navbar = () => {
               <>
                 <li><NavLink className='cursor-pointer' to="/profile" onClick={() => setIsCartOpen(false)}>PROFILE</NavLink></li>
                 <button className='cursor-pointer' onClick={() => setIsCartOpen(state => !state)}>CART</button> 
+
                 { isCartOpen &&
                   <div className='modal bg-white rounded-md' onClick={e => e.stopPropagation()}> 
                     { 
@@ -41,9 +40,9 @@ const Navbar = () => {
                                 <div key={orderProduct.product._id}>
                                   <p>{orderProduct.product.name}</p>
                                   <p>{orderProduct.quantity}</p>
-                                  <button className='inline m-1 p-1 bg-amber-300 rounded-lg text-sm' type="button" onClick={() => addProductToCart(orderProduct.product)}>Add one</button>
-                                  <button className='inline m-1 p-1 bg-orange-600 rounded-lg  text-sm' type="button" onClick={() => removeOneQuantityFromCart(orderProduct.product)}>Remove one</button>
-                                  <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm' type="button" onClick={() => removeProductFromCart(orderProduct.product)}>Remove all</button>
+                                  <button className='inline m-1 p-1 bg-amber-300 rounded-lg text-sm cursor-pointer' type="button" onClick={() => addProductToCart(orderProduct.product)}>Add one</button>
+                                  <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm cursor-pointer' type="button" onClick={() => removeOneQuantityFromCart(orderProduct.product)}>Remove one</button>
+                                  <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm cursor-pointer' type="button" onClick={() => removeProductFromCart(orderProduct.product)}>Remove all</button>
                                 </div>
                               ))
                             }
@@ -57,6 +56,7 @@ const Navbar = () => {
                     }
                   </div>
                 }  
+
               </>
           }      
         </ul>

@@ -2,9 +2,9 @@
 import asyncHandler from 'express-async-handler'
 import bcrypt from "bcryptjs";
 import { generateToken } from "../token/generateWebToken.js";
+import mongoose from 'mongoose';
 
 import User from "../models/user.model.js";
-import mongoose from 'mongoose';
 
 // Register a new user (POST request)
 export const registerUser = asyncHandler(async (req, res) => {
@@ -29,11 +29,11 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
 
     // Generate a new salt and hashed password
-    const salt = await bcrypt.genSalt(15).exec()
-    const newHashedPassword = await bcrypt.hash(password, salt).exec()
+    const salt = await bcrypt.genSalt(15)
+    const newHashedPassword = await bcrypt.hash(password, salt)
 
     // Create and save a new user on the database
-    const user = await User.create({ email, password: newHashedPassword }).exec()
+    const user = await User.create({ email, password: newHashedPassword })
 
     // Generate a new token for the user (to use for authorization)
     const userToken = generateToken(user)
@@ -102,15 +102,6 @@ export const getUserById = asyncHandler(async (req, res) => {
     }
 
     // Return a status 200 and the user
-    res.status(200).json(user)
-})
-
-export const getProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id, "-password").exec()
-    if(!user) {
-        return res.status(404).json({ message: 'User not found' })
-    }
-
     res.status(200).json(user)
 })
 

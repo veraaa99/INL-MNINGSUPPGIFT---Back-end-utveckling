@@ -1,45 +1,35 @@
+// Checkout page
+
 import axios from "../axios_api/axios"
-import { useEffect } from "react"
 import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 import { useUserContext } from "../contexts/UserContext"
 
-// Checkout page
 const CheckoutPage = () => {
 
-    const { getShoppingCartProducts, orderProducts, getTotalSum,
-          removeOneQuantityFromCart, removeProductFromCart } = useShoppingCartContext()
+    const { orderProducts, getTotalSum, addProductToCart, removeOneQuantityFromCart, removeProductFromCart } = useShoppingCartContext()
     const { token } = useUserContext()
 
-    useEffect(() => {
-        getShoppingCartProducts()
-    }, [])
-
-    const placeOrder = async( ) => {
-      console.log(orderProducts)
-
+    const placeOrder = async() => {
       const order = []
 
       orderProducts.map((orderProduct) => {
-            order.push({ productId: orderProduct.product._id, quantity: orderProduct.quantity })
+        order.push({ productId: orderProduct.product._id, quantity: orderProduct.quantity })
       })
 
-      console.log({"products": order})
-      console.log(token)
-
-        try {
-          const res = await axios.post(`api/orders`, ({"products": order}) , {
-              headers: {
-                  authorization: `Bearer ${token}`
-              }
-          })
-
-          if(res.status === 201){
-              console.log('Order succesfully placed!')
+      try {
+        const res = await axios.post(`api/orders`, ({"products": order}) , {
+          headers: {
+              authorization: `Bearer ${token}`
           }
+        })
 
-        } catch (error) {
-          console.log(error)
+        if(res.status === 201){
+          console.log('Order succesfully placed!')
         }
+
+      } catch (error) {
+        console.log(error)
+      }
     }
 
   return (
@@ -52,7 +42,6 @@ const CheckoutPage = () => {
           <div className='flex flex-col p-5 text-sm border-1 rounded-2xl mb-5'>
             {
               orderProducts.map((orderProduct) => (
-                // <div>
                   <ul className="mx-5" key={orderProduct.product._id}>
                     <div className="w-full h-full mb-5">
                       <div className="w-xs h-xs">
@@ -62,13 +51,12 @@ const CheckoutPage = () => {
                       <li className='p-2'>Price: {orderProduct.product.price} kr</li>
                       <li className='p-2'>Quantity: {orderProduct.quantity}</li>
                       <div>
-                        <button className='block p-2 bg-amber-300 rounded-xl m-2' type="button">Add to cart</button>
-                        <button className='inline m-1 p-1 bg-orange-600 rounded-lg  text-sm' type="button" onClick={() => removeOneQuantityFromCart(orderProduct.product)}>Remove one</button>
-                        <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm' type="button" onClick={() => removeProductFromCart(orderProduct.product)}>Remove all</button>
+                        <button className='block p-2 bg-amber-300 rounded-xl m-2 cursor-pointer' type="button" onClick={() => addProductToCart(orderProduct.product)}>Add to cart</button>
+                        <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm cursor-pointer' type="button" onClick={() => removeOneQuantityFromCart(orderProduct.product)}>Remove one</button>
+                        <button className='inline m-1 p-1 bg-orange-600 rounded-lg text-sm cursor-pointer' type="button" onClick={() => removeProductFromCart(orderProduct.product)}>Remove all</button>
                       </div>
                     </div>
                   </ul>
-                // </div>
               ))
             }
 

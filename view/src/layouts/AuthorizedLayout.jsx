@@ -1,3 +1,5 @@
+// Authorized Layout 
+
 import { Outlet } from "react-router"
 
 const AuthorizedLayout = () => {

@@ -1,7 +1,8 @@
+// Send a message page
+
 import { useState } from "react"
 import axios from "../axios_api/axios"
 
-// Contacts page
 const MessagePage = () => {
 
    const [formData, setFormData] = useState({
@@ -21,22 +22,18 @@ const MessagePage = () => {
   }
 
   const handleSubmit = async(e) => {
-
     e.preventDefault()
-    setError('')
 
     if(formData.name === '' || formData.email == ''  || formData.message == '') {
         setError('Please fill in all fields')
         console.log(error)
         return
     } 
+
     setError('')
 
     try {
       const response = await axios.post('api/messages', formData)
-
-      console.log(response.data)
-      console.log(response.status)
 
       if(response.status !== 200) return
             

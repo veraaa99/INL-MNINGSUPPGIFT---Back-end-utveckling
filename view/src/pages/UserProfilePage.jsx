@@ -1,5 +1,7 @@
+// User profile page
+
 import axios from "../axios_api/axios"
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useState } from "react"
 import { NavLink } from "react-router"
 
 import { useUserContext } from "../contexts/UserContext"
@@ -8,13 +10,11 @@ import { useShoppingCartContext } from "../contexts/ShoppingCartContext"
 const UserProfilePage = () => {
 
   const { token, logout, user } = useUserContext()
-  const { orderProducts, getShoppingCartProducts } = useShoppingCartContext()
+  const { orderProducts } = useShoppingCartContext()
   
   const [orders, setOrders] = useState([])
-  const [userProfile, setUserProfile] = useState(null)
 
   useEffect(() => {
-    getShoppingCartProducts()
     getUserOrders()
   }, [])
 
@@ -29,38 +29,14 @@ const UserProfilePage = () => {
       if(res.status !== 200) return
   
       setOrders(res.data)
-      console.log(orders)
       return
       
-    } catch (error) {
-      console.log(error.response?.data?.message || 'Something went wrong')
+    } catch (err) {
+      console.log(err.response?.data?.message || 'Something went wrong')
       return
     }
   }
-
-  useEffect(() => {
-    const getUserProfile = async () => {
-      try {
-        const res = await axios.get('api/users/profile', {
-          headers: {
-            authorization: `Bearer ${token}`
-          }
-        })
-        if(res.status !== 200) return
-        setUserProfile(res.data)
-        console.log(res.data)
   
-        console.log(user)
-        console.log(token)
-  
-      } catch (err) {
-        console.log(err.message)
-      }
-    }
-    getUserProfile()
-  }, [])
-  
-  console.log(userProfile)
   const handleLogout = () => {
     logout()
     return
@@ -90,7 +66,7 @@ const UserProfilePage = () => {
                       <div className="flex flex-col gap-2" key={orderProduct.product._id}>
                         <p>{orderProduct.product.name}</p>
                         <p>Quantity: {orderProduct.quantity}</p>
-                        <button className='block p-2 bg-amber-300 rounded-xl w-30' type="button">Add to cart</button>
+                        <button className='block p-2 bg-amber-300 rounded-xl w-30 cursor-pointer' type="button">Add to cart</button>
                       </div>
                     ))
                   }
@@ -140,7 +116,7 @@ const UserProfilePage = () => {
       </div>
 
       <div className="mt-10">
-        <button className='text-lg justify-self-start p-5 py-3 border-2 rounded-2xl' type="button" onClick={handleLogout}>Logout</button>      
+        <button className='text-lg justify-self-start p-5 py-3 border-2 rounded-2xl cursor-pointer' type="button" onClick={handleLogout}>Logout</button>      
       </div>
 
     </div>

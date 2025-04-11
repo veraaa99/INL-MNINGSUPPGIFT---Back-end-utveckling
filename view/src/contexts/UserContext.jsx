@@ -1,3 +1,5 @@
+// User context
+
 import { createContext, useContext, useEffect, useState } from "react"
 import axios from "../axios_api/axios"
 
@@ -7,7 +9,6 @@ const UserContextProvider = ({ children }) => {
 
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
-//   const [userReady, setUserReady] = useState(false)
   const [rememberUser, setRememberUser] = useState(false)
 
   useEffect(() => {
@@ -21,23 +22,19 @@ const UserContextProvider = ({ children }) => {
 
           const res = await axios.get('api/users/check', {
               headers: {
-                  authorization: `Bearer ${sessionStorage.getItem('jwt') || ''}`
+                authorization: `Bearer ${sessionStorage.getItem('jwt') || ''}`
               }
           })
 
           if(res.status === 200) {
-              setToken(sessionStorage.getItem('jwt'))
-              setUser(res.data)
-            //   connectSocket(res.data.name)
+            setToken(sessionStorage.getItem('jwt'))
+            setUser(res.data)
           }
 
       } catch (error) {
-          console.log(error.message)
-          sessionStorage.removeItem('jwt')
+            console.log(error.message)
+            sessionStorage.removeItem('jwt')
       }
-    //   finally {
-    //       setAuthReady(true)
-    //   }
     }
     checkToken()
   }, [])
@@ -88,7 +85,6 @@ const UserContextProvider = ({ children }) => {
           } else {
               localStorage.removeItem('rememberUser')
           }
-
           return !state
       })
   }
