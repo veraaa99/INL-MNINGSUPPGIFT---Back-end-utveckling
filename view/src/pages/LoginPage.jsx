@@ -40,9 +40,9 @@ function LoginPage() {
     }
 
   return (
-    <div className="m-10 p-5">
+    <div className="m-10 p-5 flex flex-col">
         <h2 className="text-4xl font-bold text-center">Login</h2>
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="mt-7 space-y-5 flex flex-col w-90 self-center justify-center" onSubmit={handleSubmit}>
             <div className="space-y-3">
                 <label htmlFor="email" className='block text-2xl'>Email</label>
                 <input className='border rounded-lg p-1 w-full' type="email" name="email" id="email" onChange={e => setUserInformation(state => ({ ...state, [e.target.id]: e.target.value}))} value={userInformation.email}/>
@@ -54,13 +54,13 @@ function LoginPage() {
 
             <div>
                 <input type="checkbox" name="persist" id="persist" checked={rememberUser} onChange={toggleRememberUser}/>
-                <label className="text-2xl" htmlFor="persist">Remember me</label>
+                <label className="text-xl px-2" htmlFor="persist">Remember me</label>
             </div>
-            <button className="text-2xl cursor-pointer" disabled={loading}> { loading ? <p>Logging in, please wait...</p> : 'Login' }</button>
+            <button className="self-center text-lg cursor-pointer border-1 p-3 px-8 mt-3 rounded-3xl" disabled={loading}> { loading ? <p>Logging in, please wait...</p> : 'Login' }</button>
 
         </form>
         <p className="text-red-500 text-center text-lg mt-5">{error}</p>
-        <p className="text-center text-lg mt-5">No account? <Link className="underline cursor-pointer" to="/register">Register</Link></p>
+        <p className="text-center text-md mt-10">No account? <Link className="underline cursor-pointer" to="/register">Register</Link></p>
     </div>
 
   )

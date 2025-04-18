@@ -7,7 +7,7 @@ import { useUserContext } from "../contexts/UserContext"
 
 const CheckoutPage = () => {
 
-    const { orderProducts, getTotalSum, addProductToCart, removeOneQuantityFromCart, removeProductFromCart } = useShoppingCartContext()
+    const { orderProducts, setOrderProducts, getTotalSum, addProductToCart, removeOneQuantityFromCart, removeProductFromCart } = useShoppingCartContext()
     const { token } = useUserContext()
 
     const [message, setMessage] = useState('')
@@ -28,6 +28,8 @@ const CheckoutPage = () => {
 
         if(res.status === 201){
           setMessage('Order succesfully placed!')
+          setOrderProducts([])
+          console.log(orderProducts)
         }
 
       } catch (error) {
@@ -68,12 +70,14 @@ const CheckoutPage = () => {
               <p className="text-lg">Total price: {getTotalSum()} kr</p>
               <div className="pt-20">
                 <button className="cursor-pointer hover:bg-indigo-400 hover:text-white m-3 p-3 border-3 border-solid border-slate-400 rounded-md text-lg" onClick={() => placeOrder()}>Place Order</button>
-                <p className="text-center text-lg mt-5">{message}</p>
               </div>
             </div>
-
           </div>
-          : 'Your cart is empty'
+          : 
+          <div className='flex flex-col p-5 text-sm border-1 rounded-2xl mb-5'>
+            <p>Your cart is empty</p>
+            <p className="text-center text-lg mt-5">{message}</p>
+          </div>
         }
 
     </div>

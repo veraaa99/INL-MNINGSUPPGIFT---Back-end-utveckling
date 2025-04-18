@@ -74,6 +74,7 @@ function ShoppingCartContextProvider({ children }) {
    const removeProductFromCart = ( orderProduct ) => {  
       const newOrderProducts = orderProducts.filter((product) => product.product._id !== orderProduct._id)
       setOrderProducts(newOrderProducts)
+      return orderProducts
    }
 
    const getTotalSum = () => {
@@ -99,7 +100,8 @@ function ShoppingCartContextProvider({ children }) {
 
    const values = {
         addProductToCart,
-        orderProducts,
+        orderProducts, 
+        setOrderProducts,
         removeOneQuantityFromCart,
         removeProductFromCart,
         getTotalSum
